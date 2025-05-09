@@ -1,0 +1,18 @@
+# OS-generated junk
+.DS_Store
+Thumbs.db
+
+# Editor/IDE settings
+.vscode/
+.idea/
+
+# Design sources
+*.psd
+*.ai
+*.xcf
+/media/source/
+
+# Export formats / bulk outputs
+*.webp
+*.zip
+*.pdf
