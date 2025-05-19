@@ -1,0 +1,64 @@
+# Scam Hunters Journey Map (with Artifact References)
+
+This document maps the user experience across all primary entry points into the Scam Hunters ecosystem. Each node is linked to specific artifacts (see `artifact_index.md`) and includes user intent, content block, and expected behavior.
+
+---
+
+## 🗺️ Mermaid Diagram (Journey Flow)
+
+```mermaid
+flowchart TD
+    A[User Lands on ScamHunters Entry Point] --> B{Entry Channel}
+
+    B -->|Funnel Ad or Link| C[funnel_intro_mat]
+    B -->|Direct Visit| D[home_main]
+    B -->|Facebook Post| E[FB Page / Story]
+    B -->|Google Search| G[storefront_main]
+
+    %% Funnel Flow
+    C --> hero_intro_grandma["Reads Personal Story - hero_intro_grandma"]
+    hero_intro_grandma --> C2[Clicks 'Get the Mat']
+    C2 --> C3[Checkout Page]
+    C3 --> confirmation_shared
+    confirmation_shared --> C5[Suggested Gear or Joke]
+    C5 --> G
+
+    %% Homepage flow
+    D --> D1[Reads Mission / Intro CTA]
+    D1 -->|Explore Gear| G
+    D1 -->|Join Posse| C
+
+    %% FB Flow
+    E --> E1[Clicks on Shared Post or Button]
+    E1 -->|Product| G
+    E1 -->|Joke| J[jokes_laugh_lasso]
+    E1 -->|Join Funnel| C
+
+    %% Store Path
+    G --> G1[Browses Products]
+    G1 --> G2[Clicks Hoodie / Mat / Case]
+    G2 --> G3[Store Checkout]
+    G3 --> confirmation_shared
+
+    %% Joke Path
+    J --> J1[Clicks on Joke Product]
+    J1 -->|Punchline in Description| J2[Engages, Shares, Buys Gear]
+    J2 --> G
+
+    %% Final Outcomes
+    G -->|Leaves| Z[Done for Now]
+    G -->|Follows FB| FB[Joins Community]
+```
+
+---
+
+## 🧩 Artifact Mapping (Summary)
+
+| Page                  | Artifact                                                                              | Notes                              |
+| --------------------- | ------------------------------------------------------------------------------------- | ---------------------------------- |
+| `home_main`           | `cta_explore_gear`, `cta_join_posse`, `featured_gear_row`, `footer_unified_v1`       | Entry overview and routing         |
+| `funnel_intro_mat`    | `hero_intro_grandma`, `footer_unified_v1`                                            | Story-driven entrypoint            |
+| `confirmation_shared` | `cta_explore_gear`, `joke_teaser_card`, `footer_unified_v1`                          | Shared endpoint for store + funnel |
+| `storefront_main`     | `announcement_banner_v1`, `featured_gear_row`, `cta_join_posse`, `footer_unified_v1` | Browsable product hub              |
+| `jokes_laugh_lasso`   | `joke_card_001`, `footer_unified_v1`                                                 | Collection of humorous decoys      |
+
