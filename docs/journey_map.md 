@@ -1,6 +1,6 @@
 # Scam Hunters Journey Map (with Artifact References)
 
-This document maps the user experience across all primary entry points into the Scam Hunters ecosystem. Each node is linked to specific artifacts (see `artifact_index.md`) and includes user intent, content block, and expected behavior.
+This document maps the user experience across all primary entry points into the Scam Hunters ecosystem. Each node is linked to specific artifacts (see `artifact_index.md` now structured with optional YAML metadata for automation) and includes user intent, content block, and expected behavior.
 
 ---
 
@@ -16,7 +16,7 @@ flowchart TD
     B -->|Google Search| G[storefront_main]
 
     %% Funnel Flow
-    C --> hero_intro_grandma["Reads Personal Story - hero_intro_grandma"]
+    C --> hero_intro_grandma["Reads Personal Story ⇒ hero_intro_grandma"]
     hero_intro_grandma --> C2[Clicks 'Get the Mat']
     C2 --> C3[Checkout Page]
     C3 --> confirmation_shared
@@ -29,7 +29,7 @@ flowchart TD
     D1 -->|Join Posse| C
 
     %% FB Flow
-    E --> E1[Clicks on Shared Post or Button]
+    E --> E1[Clicks on Shared Post / Button]
     E1 -->|Product| G
     E1 -->|Joke| J[jokes_laugh_lasso]
     E1 -->|Join Funnel| C
@@ -54,11 +54,24 @@ flowchart TD
 
 ## 🧩 Artifact Mapping (Summary)
 
-| Page                  | Artifact                                                                              | Notes                              |
-| --------------------- | ------------------------------------------------------------------------------------- | ---------------------------------- |
-| `home_main`           | `cta_explore_gear`, `cta_join_posse`, `featured_gear_row`, `footer_unified_v1`       | Entry overview and routing         |
-| `funnel_intro_mat`    | `hero_intro_grandma`, `footer_unified_v1`                                            | Story-driven entrypoint            |
+| Page                  | Artifact(s)                                                                          | Notes                              |
+| --------------------- | ------------------------------------------------------------------------------------ | ---------------------------------- |
+| `home_main`           | `cta_explore_gear`, `cta_join_posse`, `featured_gear_row`, `footer_unified_v1`       | Entry overview & routing           |
+| `funnel_intro_mat`    | `hero_intro_grandma`, `footer_unified_v1`                                            | Story‑driven entrypoint            |
 | `confirmation_shared` | `cta_explore_gear`, `joke_teaser_card`, `footer_unified_v1`                          | Shared endpoint for store + funnel |
 | `storefront_main`     | `announcement_banner_v1`, `featured_gear_row`, `cta_join_posse`, `footer_unified_v1` | Browsable product hub              |
 | `jokes_laugh_lasso`   | `joke_card_001`, `footer_unified_v1`                                                 | Collection of humorous decoys      |
 
+*(For full definitions see `/docs/artifact_index.md`.)*
+
+---
+
+### ▶️ Next‑Chat Integration Instructions (to be created)
+
+`/docs/integration_instructions_cf.md`
+
+* Map each artifact ID to its ClickFunnels section ID / page path
+* List screenshots needed per artifact (if missing)
+* Checklist: redirect fixes, email automation, footer unification
+
+> **Action for next session:** populate the instruction doc using the artifact IDs and the screenshots captured.
