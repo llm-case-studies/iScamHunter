@@ -101,6 +101,31 @@ flowchart TD
 
 ---
 
+## 📂  Required Context Files for Fresh Session
+
+When starting a **new AI or human workspace**, attach or paste **all** files below.  
+If any are missing, prompt the user to provide them **before** proceeding.
+
+| # | File                                   | Why it matters                                               |
+|---|----------------------------------------|--------------------------------------------------------------|
+| 1 | `docs/campaign_blueprint.md`           | Master roadmap & meta-goal                                   |
+| 2 | `docs/urls.txt`                        | Canonical page list for snapshots                            |
+| 3 | `docs/urls_description.md`             | Intent for every URL (human-readable)                        |
+| 4 | `docs/artifact_index.md`               | Registry of reusable blocks & copy                           |
+| 5 | `docs/journey_map.md`                  | Mermaid flow + page→artifact matrix                          |
+| 6 | `docs/integration_report.md`           | Running audit checklist (auto-updated)                       |
+| 7 | `docs/social_channels.md` *(optional)* | Tone & CTA guide for FB / IG / X / TG                         |
+| 8 | `snapshot/` folder *(optional)*        | Latest Playwright captures (screens/html)                    |
+
+> **First-load procedure**  
+> 1. Load the files above.  
+> 2. If `urls.txt` changed, update before running `tools/capture.py`.  
+> 3. Use `artifact_index.md` as the authoritative mapping for block IDs and copy.
+
+---
+
+---
+
 ## 5 · Immediate TODOs
 
 | 🔥/★/☆ | Task                                        | Owner   | Tracker | Status |
