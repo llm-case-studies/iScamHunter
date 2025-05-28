@@ -1,42 +1,47 @@
-
 flowchart TD
     A[User Lands on ScamHunters Entry Point] --> B{Entry Channel}
-
-    B -->|Funnel Ad or Link| C[funnel_intro_mat]
-    B -->|Direct Visit| D[home_main]
+    
+    B -->|Funnel Ad / Link| C[funnel_start_mat (/mat)]
+    B -->|Direct Visit| D[home_main (/)]
     B -->|Facebook Post| E[FB Page / Story]
-    B -->|Google Search| G[storefront_main]
+    B -->|Search| G[storefront_main (/store)]
+    B -->|Other Social (IG / X / TG)| SM_OTHER[(IG / X / TG Posts)]
 
     %% Funnel Flow
-    C --> hero_intro_grandma["Reads Personal Story ⇒ hero_intro_grandma"]
-    hero_intro_grandma --> C2[Clicks 'Get the Mat']
+    C --> C1[Reads Personal Story (hero_intro_grandma)]
+    C1 --> C2[Clicks 'Get the Mat' (cta_get_mat)]
     C2 --> C3[Checkout Page]
-    C3 --> confirmation_shared
-    confirmation_shared --> C5[Suggested Gear or Joke]
+    C3 --> C4[Confirmation Page (/order-confirmation)]
+    C4 --> C5[Suggested Gear or Joke]
     C5 --> G
 
-    %% Homepage flow
+    %% Homepage Flow
     D --> D1[Reads Mission / Intro CTA]
     D1 -->|Explore Gear| G
     D1 -->|Join Posse| C
+    D1 --> optin_email[Footer Email Sign-up]
 
-    %% FB Flow
-    E --> E1[Clicks on Shared Post / Button]
+    %% Facebook Flow
+    E --> E1[Clicks FB Post]
     E1 -->|Product| G
-    E1 -->|Joke| J[jokes_laugh_lasso]
+    E1 -->|Joke| J[jokes_laugh_lasso (/collections/laugh-lasso)]
     E1 -->|Join Funnel| C
 
+    %% Other Social Flow
+    SM_OTHER -->|Product| G
+    SM_OTHER -->|Join Funnel| C
+
     %% Store Path
-    G --> G1[Browses Products]
+    G --> G1[Browse Products]
     G1 --> G2[Clicks Hoodie / Mat / Case]
     G2 --> G3[Store Checkout]
-    G3 --> confirmation_shared
+    G3 --> C4
 
     %% Joke Path
-    J --> J1[Clicks on Joke Product]
-    J1 -->|Punchline in Description| J2[Engages, Shares, Buys Gear]
+    J --> J1[Clicks Joke Product]
+    J1 -->|Punchline Shown| J2[Engages / Shares / Buys Gear]
     J2 --> G
 
-    %% Final Outcomes
+    %% Outcomes
     G -->|Leaves| Z[Done for Now]
-    G -->|Follows FB| FB[Joins Community]
+    G -->|Follow FB| FB[Joins Community]
