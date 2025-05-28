@@ -1,0 +1,21 @@
+# urls.txt
+
+# Canonical list of **public URLs** the snapshot script will crawl.
+
+# Trailing comments (after #) identify internal page IDs.
+
+# Edit slugs here first, then run `tools/capture.py`.
+
+[https://www.iscamhunter.com/](https://www.iscamhunter.com/)                         # home\_main
+[https://www.iscamhunter.com/mat](https://www.iscamhunter.com/mat)                      # funnel\_start\_mat
+[https://www.iscamhunter.com/order-confirmation](https://www.iscamhunter.com/order-confirmation)       # confirmation\_shared
+[https://www.iscamhunter.com/store](https://www.iscamhunter.com/store)                    # storefront\_main
+[https://www.iscamhunter.com/collections/gear](https://www.iscamhunter.com/collections/gear)         # gear\_collection\_core
+[https://www.iscamhunter.com/collections/laugh-lasso](https://www.iscamhunter.com/collections/laugh-lasso)  # jokes\_laugh\_lasso
+
+# --- Social Channels (placeholders for snapshot or reference) ---
+
+[https://facebook.com/ScamHuntersHQ](https://facebook.com/ScamHuntersHQ)                   # fb\_page\_main
+[https://instagram.com/ScamHuntersIG](https://instagram.com/ScamHuntersIG)                  # ig\_profile (TBD)
+[https://twitter.com/ScamHuntersX](https://twitter.com/ScamHuntersX)                     # tw\_profile (TBD)
+[https://t.me/ScamHuntersHQ](https://t.me/ScamHuntersHQ)                           # tg\_channel (TBD)
