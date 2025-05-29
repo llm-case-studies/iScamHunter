@@ -1,0 +1,100 @@
+[
+  {
+    "tag": "div",
+    "id": null,
+    "class": [
+      "main-wrapper"
+    ],
+    "text": "www.iscamhunter.com Verifying you are human. This may take a few seconds. www.iscamhunter.com needs to review the securi"
+  },
+  {
+    "tag": "div",
+    "id": null,
+    "class": [
+      "main-content"
+    ],
+    "text": "www.iscamhunter.com Verifying you are human. This may take a few seconds. www.iscamhunter.com needs to review the securi"
+  },
+  {
+    "tag": "div",
+    "id": "CefdN0",
+    "class": [
+      "core-msg",
+      "spacer",
+      "spacer-top"
+    ],
+    "text": "www.iscamhunter.com needs to review the security of your connection before proceeding."
+  },
+  {
+    "tag": "div",
+    "id": "LyOUI7",
+    "class": null,
+    "text": "Verification successful Waiting for www.iscamhunter.com to respond..."
+  },
+  {
+    "tag": "div",
+    "id": "challenge-success-text",
+    "class": [
+      "h2"
+    ],
+    "text": "Verification successful"
+  },
+  {
+    "tag": "div",
+    "id": null,
+    "class": [
+      "core-msg",
+      "spacer"
+    ],
+    "text": "Waiting for www.iscamhunter.com to respond..."
+  },
+  {
+    "tag": "div",
+    "id": null,
+    "class": [
+      "h2"
+    ],
+    "text": "Enable JavaScript and cookies to continue"
+  },
+  {
+    "tag": "div",
+    "id": null,
+    "class": [
+      "footer"
+    ],
+    "text": "Ray ID: 946faf00bdde41fb Performance & security by Cloudflare"
+  },
+  {
+    "tag": "div",
+    "id": null,
+    "class": [
+      "footer-inner"
+    ],
+    "text": "Ray ID: 946faf00bdde41fb Performance & security by Cloudflare"
+  },
+  {
+    "tag": "div",
+    "id": null,
+    "class": [
+      "clearfix",
+      "diagnostic-wrapper"
+    ],
+    "text": "Ray ID: 946faf00bdde41fb"
+  },
+  {
+    "tag": "div",
+    "id": null,
+    "class": [
+      "ray-id"
+    ],
+    "text": "Ray ID: 946faf00bdde41fb"
+  },
+  {
+    "tag": "div",
+    "id": "footer-text",
+    "class": [
+      "text-center"
+    ],
+    "text": "Performance & security by Cloudflare"
+  }
+]

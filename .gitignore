@@ -16,3 +16,7 @@ Thumbs.db
 *.webp
 *.zip
 *.pdf
+
+# --- browser-extension runtime captures ---
+/Browser_Addins/**/Captures/
+
