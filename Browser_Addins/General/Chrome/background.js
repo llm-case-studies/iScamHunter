@@ -1,98 +1,98 @@
-// background.js – Universal Page Capture v0.4.3
-// ---------------------------------------------------------------------------
-// One‑click capture workflow
-//   1. Ask content script for fully rendered HTML + outline (CAPTURE_NOW).
-//   2. Save HTML + outline as data‑URLs via chrome.downloads.download.
-//   3. Scroll the main window top‑to‑bottom in viewport steps, throttled to
-//        MIN_INTERVAL_MS to stay below Chrome quota, capturing each tile.
-//      • Optionally save every tile PNG.
-//   4. Stitch the tiles in an OffscreenCanvas → full‑page PNG.
-//   5. Save stitched PNG.
-//
-// Fixes in v0.4.3
-//   • Removed duplicate helper that caused Unexpected token errors.
-//   • OffscreenCanvas requires integer height – use Math.ceil.
-//   • Guard for captureVisibleTab returning undefined.
-//   • Clean filenames (no double dots).
+// Browser_Addins/General/Chrome/background.js
+const MIN_INTERVAL_MS = 350;  // throttle
+let lastCapture = 0;
 
-const MIN_INTERVAL_MS = 350;   // Chrome ~2 captures/sec limit in MV3
-const SAVE_TILES       = true; // set false if tiles not needed
-const IMAGE_TYPE       = 'png';
-
-chrome.action.onClicked.addListener(async (tab) => {
-  if (!tab.id || !tab.url.startsWith('http')) return;
-
-  // 1 ‑‑ Collect HTML + outline
-  const res = await chrome.tabs.sendMessage(tab.id, { type: 'CAPTURE_NOW' })
-                   .catch(() => null);
-  if (!res || !res.html) {
-    console.warn('CAPTURE_NOW failed – content script missing?');
-    return;
-  }
-
-  // Derive filenames
-  const ts   = new Date().toISOString().replace(/[:T]/g, '-').slice(0, 16);
-  const host = new URL(tab.url).hostname.replace(/[^a-zA-Z0-9.-]/g, '_');
-  const base = `Capture_${host}_${ts}`;
-
-  // Helper – encode small strings as data URLs
-  const toDataUrl = (str, mime) => 'data:' + mime + ';charset=utf-8,' + encodeURIComponent(str);
-
-  // a) Save HTML & outline
-  chrome.downloads.download({ url: toDataUrl(res.html, 'text/html'),                             filename: `${base}.html`  });
-  chrome.downloads.download({ url: toDataUrl(JSON.stringify(res.outline, null, 2), 'application/json'), filename: `${base}.json`  });
-
-  // b) Full‑page capture (tiles + stitch)
-  await fullPageCapture(tab, base);
+chrome.action.onClicked.addListener((tab) => {
+  // still supports the old direct click if needed
+  chrome.runtime.sendMessage({ type: 'CAPTURE_WITH_OPTIONS', options: { main: ['screenshot','outline','html'] } });
 });
 
-// ─────────────────────────────────────────────────────────────────────────────
-async function fullPageCapture(tab, base) {
-  const dims = await chrome.tabs.sendMessage(tab.id, { type: 'GET_DIMENSIONS' });
-  const tiles = [];
-  let y = 0, index = 0;
+// New: listen for the popup’s command
+chrome.runtime.onMessage.addListener((msg, _sender) => {
+  if (msg.type !== 'CAPTURE_WITH_OPTIONS') return;
 
-  while (y < dims.totalHeight) {
-    await chrome.tabs.sendMessage(tab.id, { type: 'SCROLL_TO', y });
-    await delay(MIN_INTERVAL_MS);
+  const opts = msg.options || {};
+  chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+    const tab = tabs[0];
+    runCaptureWithOptions(tab, opts);
+  });
+  return true;
+});
 
-    const dataUrl = await new Promise(res =>
-      chrome.tabs.captureVisibleTab(tab.windowId, { format: IMAGE_TYPE }, res));
-    if (!dataUrl) {
-      console.warn('captureVisibleTab returned undefined – quota hit?');
-      break;
-    }
+async function runCaptureWithOptions(tab, opts) {
+  // 1) Always get the core data in one call
+  const resp = await chrome.tabs.sendMessage(tab.id, { type: 'CAPTURE_NOW' });
+  const base = toFilename(tab.url);
 
-    tiles.push({ dataUrl, y });
-    if (SAVE_TILES) {
-      chrome.downloads.download({ url: dataUrl, filename: `${base}_tile_${String(index).padStart(3,'0')}.${IMAGE_TYPE}` });
-    }
-    y += dims.viewportHeight;
-    index++;
+  // 2) Main window
+  const mainOpts = opts.main || [];
+  if (mainOpts.includes('html')) {
+    chrome.downloads.download({ url: dataUrl(resp.html,'text/html'), filename:`${base}.html` });
+  }
+  if (mainOpts.includes('outline')) {
+    chrome.downloads.download({ url: dataUrl(JSON.stringify(resp.outline,null,2),'application/json'), filename:`${base}.json` });
+  }
+  if (mainOpts.includes('text')) {
+    chrome.downloads.download({ url: dataUrl(resp.text,'text/plain'), filename:`${base}.txt` });
+  }
+  if (mainOpts.includes('screenshot')) {
+    await fullPageCapture(tab, base, { saveTiles:false, imgType:'png' });
   }
 
-  // Stitch tiles
-  const bitmaps = await Promise.all(tiles.map(t => dataUrlToBitmap(t.dataUrl)));
-  const canvas = new OffscreenCanvas(bitmaps[0].width, Math.ceil(dims.totalHeight * dims.devicePixelRatio));
+  // 3) Panes (future – leaving placeholders)
+  Object.entries(opts)
+    .filter(([k])=> k!=='main')
+    .forEach(async ([paneId, actions]) => {
+      // TODO: locate pane by ID, scroll it, then repeat html/Text/Screenshot on that element
+      console.warn('Pane capture not yet implemented for pane:',paneId, actions);
+    });
+}
+
+// ─── full-page capture as before ──────────────────────────────────
+async function fullPageCapture(tab, base, { saveTiles, imgType }) {
+  const now = Date.now();
+  if (now - lastCapture < MIN_INTERVAL_MS) {
+    await new Promise(r => setTimeout(r, MIN_INTERVAL_MS - (now - lastCapture)));
+  }
+  lastCapture = Date.now();
+
+  const dims = await chrome.tabs.sendMessage(tab.id, { type:'GET_DIMENSIONS' });
+  let scrollY = 0, i = 0, shots = [];
+  while (scrollY < dims.totalHeight) {
+    await chrome.tabs.sendMessage(tab.id, { type:'SCROLL_TO', y: scrollY });
+    await delay(150);
+    const dataUrl_ = await new Promise(res =>
+      chrome.tabs.captureVisibleTab(tab.windowId,{format:imgType},res));
+    shots.push({ dataUrl:dataUrl_, y:scrollY });
+    scrollY += dims.viewportHeight;
+  }
+  // optional tiles
+  if (saveTiles) {
+    shots.forEach((s,j)=> {
+      chrome.downloads.download({
+        url:s.dataUrl, filename:`${base}_tile_${String(j).padStart(3,'0')}.${imgType}`
+      });
+    });
+  }
+  // stitch
+  const imgs = await Promise.all(shots.map(s=> dataUrlToBitmap(s.dataUrl)));
+  const canvas = new OffscreenCanvas(imgs[0].width, Math.ceil(dims.totalHeight*dims.devicePixelRatio));
   const ctx = canvas.getContext('2d');
-  bitmaps.forEach((bmp, i) => ctx.drawImage(bmp, 0, tiles[i].y * dims.devicePixelRatio));
-
-  const blob = await canvas.convertToBlob({ type: `image/${IMAGE_TYPE}` });
-  const stitchedUrl = await blobToDataUrl(blob);
-  chrome.downloads.download({ url: stitchedUrl, filename: `${base}_full.${IMAGE_TYPE}` });
+  imgs.forEach((img,k)=> ctx.drawImage(img,0,shots[k].y*dims.devicePixelRatio));
+  const blob = await canvas.convertToBlob({type:`image/${imgType}`});
+  chrome.downloads.download({ url: URL.createObjectURL(blob), filename:`${base}_full.${imgType}` });
 }
 
-function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-async function dataUrlToBitmap(dataUrl) {
-  const blob = await (await fetch(dataUrl)).blob();
+function toFilename(u) {
+  const h = new URL(u).hostname.replace(/[^a-z0-9.-]/gi,'_');
+  const ts = new Date().toISOString().replace(/[:.]/g,'-');
+  return `Capture_${h}_${ts}`;
+}
+function dataUrl(str,mime){
+  return 'data:'+mime+';charset=utf-8,'+encodeURIComponent(str);
+}
+function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+async function dataUrlToBitmap(url){
+  const blob = await (await fetch(url)).blob();
   return createImageBitmap(blob);
-}
-
-function blobToDataUrl(blob) {
-  return new Promise(res => {
-    const fr = new FileReader();
-    fr.onload = () => res(fr.result);
-    fr.readAsDataURL(blob);
-  });
 }
