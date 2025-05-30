@@ -1,49 +1,53 @@
-<!-- popup.html – Universal Page Capture v0.5 (Phase‑2 scaffold)
---------------------------------------------------------------------------
-A minimal Manifest‑V3 popup that:
-  • Lists detected scrollable panes (populated by popup.js).
-  • Lets user choose capture mode per pane.
-  • Shows a running log while capture executes.
--->
+<!-- Browser_Addins/General/Chrome/popup.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Page Capture</title>
+  <meta charset="UTF-8">
+  <title>Universal Page Capture</title>
   <style>
-    body {
-      font-family: system-ui, sans-serif; margin: 0; padding: 0.5rem 0.75rem; width: 320px; }
-    h1 { font-size: 1rem; margin: 0 0 0.5rem 0; }
-    #paneList { max-height: 260px; overflow-y: auto; margin-bottom: 0.5rem; }
-    .pane-line { display: flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; margin-bottom: 2px; }
-    select { font-size: 0.75rem; }
-    button { width: 100%; padding: 6px; font-size: 0.85rem; margin-top: 4px; }
-    #log { font-size: 0.7rem; max-height: 80px; overflow-y: auto; background:#f5f5f5; padding:4px; border:1px solid #ddd; }
+    body { font-family: sans-serif; width: 320px; margin: 0; padding: 10px; }
+    h1 { font-size: 16px; margin: 0 0 10px; }
+    .controls { margin-bottom: 8px; }
+    .controls button { margin-right: 6px; }
+    .section { margin-bottom: 12px; }
+    .section-title { font-weight: bold; margin-bottom: 4px; }
+    ul { list-style: none; padding: 0; margin: 0; max-height: 200px; overflow-y: auto; }
+    li { margin-bottom: 6px; }
+    label { margin-right: 8px; font-size: 13px; }
+    #start-btn { width: 100%; padding: 6px; font-size: 14px; }
+    #log { margin-top: 8px; height: 80px; overflow-y: auto; background: #f5f5f5; border: 1px solid #ddd; padding: 4px; font-size: 12px; }
   </style>
 </head>
 <body>
   <h1>📸 Capture page</h1>
 
-  <div class="pane-line">
-    <strong>Main window:</strong>
-    <select id="mainMode">
-      <option value="pixels-text">Pixels + Text</option>
-      <option value="text-only">Text only</option>
-      <option value="skip">Skip</option>
-    </select>
+  <div class="controls">
+    <button id="check-all">All</button>
+    <button id="check-none">None</button>
   </div>
 
-  <hr />
-  <div id="paneList"></div>
+  <div class="section">
+    <div class="section-title">Main window:</div>
+    <ul id="pane-list">
+      <li data-id="main">
+        <label><input type="checkbox" class="opt-screenshot"> Screenshot</label>
+        <label><input type="checkbox" class="opt-outline"> Outline</label>
+        <label><input type="checkbox" class="opt-html"> HTML</label>
+        <label><input type="checkbox" class="opt-text"> Text</label>
+      </li>
+    </ul>
+  </div>
 
-  <button id="startBtn">Start capture</button>
+  <div class="section">
+    <div class="section-title">Scrollable panes:</div>
+    <ul id="pane-list-areas">
+      <!-- dynamically injected -->
+    </ul>
+  </div>
 
-  <details style="margin-top:6px;">
-    <summary style="cursor:pointer;">Log</summary>
-    <pre id="log"></pre>
-  </details>
+  <button id="start-btn">Start Capture</button>
+  <div id="log"></div>
 
-  <script src="popup.js"></script>
+  <script defer src="popup.js"></script>
 </body>
 </html>

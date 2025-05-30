@@ -3,29 +3,40 @@
   "name": "Universal Page Capture",
   "version": "0.4",
   "description": "One-click HTML + outline + full-page PNG (tiles + stitch) for any site.",
-
-  "permissions": ["activeTab", "downloads", "scripting", "tabs"],
-  "host_permissions": ["<all_urls>"],
-
+  "permissions": [
+    "activeTab",
+    "downloads",
+    "scripting",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "action": {
     "default_title": "Capture page",
-    "default_icon": { "16": "icon16.png" }
+    "default_icon": {
+      "16": "icon16.png"
+    },
+    "default_popup": "popup.html" // ← add this line
   },
-
   "icons": {
-    "16":  "icon16.png",
-    "32":  "icon32.png",
-    "48":  "icon48.png",
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
     "128": "icon128.png"
   },
-
   "background": {
     "service_worker": "background.js"
   },
-
-  "content_scripts": [{
-    "matches": ["<all_urls>"],
-    "js": ["capture.js"],
-    "run_at": "document_end"
-  }]
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "capture.js"
+      ],
+      "run_at": "document_end"
+    }
+  ]
 }
