@@ -1,44 +1,42 @@
 {
   "manifest_version": 3,
   "name": "Universal Page Capture",
-  "version": "0.4",
-  "description": "One-click HTML + outline + full-page PNG (tiles + stitch) for any site.",
+  "version": "0.4.3",
+  "description": "One‐click HTML + screenshot + outline + text saver for any page.",
+  "action": {
+    "default_icon": {
+      "16": "icon16.png",
+      "32": "icon32.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    },
+    "default_title": "Capture page",
+    "default_popup": "popup.html"
+  },
   "permissions": [
-    "activeTab",
     "downloads",
+    "activeTab",
     "scripting",
     "tabs"
   ],
   "host_permissions": [
     "<all_urls>"
   ],
-  "action": {
-    "default_title": "Capture page",
-    "default_icon": {
-      "16": "icon16.png"
-    },
-    "default_popup": "popup.html" // ← add this line
-  },
-  "icons": {
-    "16": "icon16.png",
-    "32": "icon32.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
-  },
   "background": {
     "service_worker": "background.js",
     "type": "module"
   },
   "content_scripts": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "logger.js",
-        "capture.js"
-      ],
+      "matches": ["<all_urls>"],
+      "js": ["logger.js", "capture.js"],
       "run_at": "document_end"
     }
-  ]
+  ],
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
 }
