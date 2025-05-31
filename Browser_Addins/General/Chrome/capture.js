@@ -3,7 +3,11 @@
 // No change needed here unless you want to filter out unwanted data.
 // It already returns html, outline, text on CAPTURE_NOW.
 chrome.runtime.onMessage.addListener((msg, _sender, sendRes) => {
+
+  logger.debug('capture.js got message', msg);
+
   if (msg.type === 'CAPTURE_NOW') {
+    logger.info('Handling CAPTURE_NOW');
     const html    = document.documentElement.outerHTML;
     const outline = buildOutline(document.body);
     const text    = document.body.innerText || '';
