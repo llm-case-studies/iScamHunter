@@ -30,7 +30,20 @@ async function runCaptureWithOptions(tab, opts) {
   // 1) Always get the core data in one call
 
   logger.info('▶ Capture started for', tab.url, opts);
-  const resp = await chrome.tabs.sendMessage(tab.id, { type: 'CAPTURE_NOW' });
+  //const resp = await chrome.tabs.sendMessage(tab.id, { type: 'CAPTURE_NOW' });
+  let resp;
+  try {
+    resp = await chrome.tabs.sendMessage(tab.id, { type: 'CAPTURE_NOW' });
+  } catch (err) {
+    // No listener (i.e., capture.js not injected)
+    logger.error('Error sending CAPTURE_NOW—no capture.js listener?', err);
+    return;
+  }
+  if (!resp) {
+    // capture.js didn’t call sendRes(...) or returned nothing
+    logger.warn(`No response from capture.js (resp was undefined). Is capture.js injected?`);
+    return;
+  }
   logger.debug('→ Received CAPTURE_NOW response', resp);
 
   const base = toFilename(tab.url);
@@ -42,7 +55,11 @@ async function runCaptureWithOptions(tab, opts) {
     chrome.downloads.download({ url: dataUrl(resp.html, 'text/html'), filename: `${base}.html` });
   }
   if (mainOpts.includes('outline')) {
-    chrome.downloads.download({ url: dataUrl(JSON.stringify(resp.outline, null, 2), 'application/json'), filename: `${base}.json` });
+    chrome.downloads.download({ 
+      url: dataUrl(JSON.stringify(resp.outline, null, 2), 'application/json'), filename: `${base}.json`, 
+      filename: `${base}.json`
+    });
+
   }
   if (mainOpts.includes('text')) {
     chrome.downloads.download({ url: dataUrl(resp.text, 'text/plain'), filename: `${base}.txt` });

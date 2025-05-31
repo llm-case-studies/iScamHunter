@@ -26,7 +26,8 @@
     "128": "icon128.png"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   },
   "content_scripts": [
     {
@@ -34,6 +35,7 @@
         "<all_urls>"
       ],
       "js": [
+        "logger.js",
         "capture.js"
       ],
       "run_at": "document_end"
