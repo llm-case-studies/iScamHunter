@@ -1,29 +1,40 @@
-// Browser_Addins/General/Chrome/logger.js
-(() => {
-  // Define numeric levels
-  const LOG_LEVELS = { DEBUG: 0, INFO: 1, WARN: 2, ERROR: 3 };
-  // Set your desired minimal level here:
-  const CURRENT_LOG_LEVEL = LOG_LEVELS.INFO;
+// ────────────────────────────────────────────────────────────────────
+// logger.js
+//
+// “Minimal viable” logger for both the service worker (background.js)
+// and the popup (popup.js).  Simply wraps console.log with levels.
+//─────────────────────────────────────────────────────────────────────
 
-  // Internal helper
-  function _should(level) {
-    return LOG_LEVELS[level] >= CURRENT_LOG_LEVEL;
-  }
-  function _fmt(args) {
-    return args.map(a =>
-      typeof a === 'object' ? JSON.stringify(a) : String(a)
-    ).join(' ');
-  }
+const LEVELS = { debug: 1, info: 2, warn: 3, error: 4 };
+const CURRENT_LEVEL = LEVELS.debug; // change to “info” or “warn” to silence debug
 
-  // Expose logger globally
-  const L = {
-    debug: (...args) => { if (_should('DEBUG')) console.debug('[D]', _fmt(args)); },
-    info:  (...args) => { if (_should('INFO'))  console.info ('[I]', _fmt(args)); },
-    warn:  (...args) => { if (_should('WARN'))  console.warn ('[W]', _fmt(args)); },
-    error: (...args) => { if (_should('ERROR')) console.error('[E]', _fmt(args)); },
+function makeLogger(namespace) {
+  return {
+    debug: (...args) => {
+      if (CURRENT_LEVEL <= LEVELS.debug) {
+        console.log(`[D] ${namespace}:`, ...args);
+      }
+    },
+    info: (...args) => {
+      if (CURRENT_LEVEL <= LEVELS.info) {
+        console.log(`[I] ${namespace}:`, ...args);
+      }
+    },
+    warn: (...args) => {
+      if (CURRENT_LEVEL <= LEVELS.warn) {
+        console.warn(`[W] ${namespace}:`, ...args);
+      }
+    },
+    error: (...args) => {
+      if (CURRENT_LEVEL <= LEVELS.error) {
+        console.error(`[E] ${namespace}:`, ...args);
+      }
+    }
   };
+}
 
-  // Attach to both window (content/popup) and self (service worker)
-  if (typeof window !== 'undefined') window.logger = L;
-  if (typeof self   !== 'undefined') self.logger   = L;
-})();
+// In a content script or popup, “self” is the global object.  In the service worker,
+// “self” is also the worker’s global object.  Either way, attaching “logger” to self:
+self.logger = makeLogger(
+  chrome.runtime.id ? chrome.runtime.id.slice(-4) : "----"
+);

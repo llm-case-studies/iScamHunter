@@ -1,83 +1,128 @@
-// Browser_Addins/General/Chrome/popup.js
+// popup.js
+// ——————————————
+// Controls “All/None” toggles, populates scrollable‐pane checkboxes,
+// then sends final capture‐options to background.js
+// ——————————————
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
+  const logEl = document.getElementById("log");
 
-    logger.info('Popup opened');
+  function appendLog(msg) {
+    const now = new Date().toLocaleTimeString();
+    logEl.textContent += `[${now}]  ${msg}\n`;
+    logEl.scrollTop = logEl.scrollHeight;
+  }
 
-    const paneList = document.getElementById('pane-list');
-    const paneAreas = document.getElementById('pane-list-areas');
-    const btnAll = document.getElementById('check-all');
-    const btnNone = document.getElementById('check-none');
-    const btnStart = document.getElementById('start-btn');
-    const logDiv = document.getElementById('log');
+  logger.info("Popup opened");
+  appendLog("Popup rendering complete!");
 
-    // 1) Default main window = all
-    const mainLi = paneList.querySelector('li[data-id="main"]');
-    ['screenshot', 'outline', 'html', 'text'].forEach(opt => {
-        mainLi.querySelector('.opt-' + opt).checked = true;
-    });
+  // ————————————
+  // “All / None” buttons
+  // ————————————
+  document.getElementById("btn-all").addEventListener("click", () => {
+    document.querySelectorAll('input[type=checkbox][data-id], input[type=checkbox][data-pane-id]')
+      .forEach(cb => (cb.checked = true));
+  });
+  document.getElementById("btn-none").addEventListener("click", () => {
+    document.querySelectorAll('input[type=checkbox][data-id], input[type=checkbox][data-pane-id]')
+      .forEach(cb => (cb.checked = false));
+  });
 
-    // 2) Discover scrollable panes
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        const tabId = tabs[0].id;
-        chrome.tabs.sendMessage(tabId, { type: 'DETECT_PANES' }, (panes) => {
-            if (chrome.runtime.lastError) {
-                appendLog('Could not detect panes – refresh and try again');
-                return;
-            }
-            if (!Array.isArray(panes)) {
-                panes = [];
-            }
-            panes.forEach(pane => {
-                const li = document.createElement('li');
-                li.dataset.id = pane.id;
-                li.textContent = `${pane.label} (${pane.height}px) `;
-                ['screenshot', 'outline', 'html', 'text'].forEach(opt => {
-                    const cb = document.createElement('input');
-                    cb.type = 'checkbox';
-                    cb.className = 'opt-' + opt;
-                    if (opt === 'text') cb.checked = true;         // default inner => Text
-                    const lbl = document.createElement('label');
-                    lbl.prepend(cb);
-                    lbl.append(' ' + opt.charAt(0).toUpperCase() + opt.slice(1));
-                    li.appendChild(lbl);
-                });
-                paneAreas.appendChild(li);
-            });
+  // ————————————
+  // Step 1: Detect scrollable panes
+  // ————————————
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const tab = tabs[0];
+
+    chrome.tabs.sendMessage(tab.id, { type: "DETECT_PANES" }, (panes) => {
+      if (chrome.runtime.lastError) {
+        logger.warn("Could not reach capture.js – refresh the page and try again");
+        appendLog("Could not reach capture.js – refresh and try again");
+        return;
+      }
+
+      const paneList = document.getElementById("paneList");
+      paneList.innerHTML = "";
+
+      if (!panes || panes.length === 0) {
+        const msgDiv = document.createElement("div");
+        msgDiv.textContent = "No scrollable panes found.";
+        paneList.appendChild(msgDiv);
+      } else {
+        panes.forEach((pane) => {
+          const line = document.createElement("div");
+          line.className = "pane-line";
+
+          // (A) Pane label (e.g. “html (4575px)”)
+          const lbl = document.createElement("div");
+          lbl.className = "pane-label";
+          lbl.textContent = `${pane.label} (${pane.height}px)`;
+          line.appendChild(lbl);
+
+          // (B) Four checkboxes: screenshot, outline, html, text
+          ["screenshot", "outline", "html", "text"].forEach((action) => {
+            const chk = document.createElement("input");
+            chk.type = "checkbox";
+            chk.dataset.paneId = pane.id;   // e.g. "0", "1", ...
+            chk.dataset.action = action;     // e.g. "screenshot", ...
+            // default: only “text” for panes
+            chk.checked = (action === "text");
+
+            const lbl2 = document.createElement("label");
+            lbl2.className = "pane-checkbox-group";
+            lbl2.appendChild(chk);
+            const textNode = document.createTextNode(" " + action.charAt(0).toUpperCase() + action.slice(1));
+            lbl2.appendChild(textNode);
+            line.appendChild(lbl2);
+          });
+
+          paneList.appendChild(line);
         });
+      }
     });
+  });
 
-    // 3) All / None controls
-    btnAll.addEventListener('click', () => {
-        document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = true);
+  // ————————————
+  // Step 2: When “Start Capture” is clicked
+  // ————————————
+  document.getElementById("start-btn").addEventListener("click", () => {
+    appendLog("▶ Initiating capture…");
+    logger.info("▶ Popup Start Capture clicked");
+
+    // (A) Build the “main” array
+    const opts = {};
+    const mainSelections = [];
+    document.querySelectorAll('fieldset input[type=checkbox][data-id]').forEach((cb) => {
+      if (cb.checked) mainSelections.push(cb.dataset.id);
     });
-    btnNone.addEventListener('click', () => {
-        document.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
-    });
+    opts.main = mainSelections; // e.g. ["screenshot","outline","html","text"]
 
-    // 4) Start capture – collect options & send
-    btnStart.addEventListener('click', () => {
-        const options = {};
-        document.querySelectorAll('li').forEach(li => {
-            const id = li.dataset.id;
-            const sel = [];
-            if (li.querySelector('.opt-screenshot').checked) sel.push('screenshot');
-            if (li.querySelector('.opt-outline').checked) sel.push('outline');
-            if (li.querySelector('.opt-html').checked) sel.push('html');
-            if (li.querySelector('.opt-text').checked) sel.push('text');
-            options[id] = sel;
-        });
-        appendLog('Selections: ' + JSON.stringify(options));
+    // (B) Build each pane’s array
+    document
+      .querySelectorAll('#paneList input[type=checkbox][data-pane-id]')
+      .forEach((chk) => {
+        const pid = chk.dataset.paneId;      // “0”, “1”, “2”, …
+        const action = chk.dataset.action;   // “screenshot”, “outline”, …
+        if (!opts[pid]) opts[pid] = [];
+        if (chk.checked) {
+          opts[pid].push(action);
+        }
+      });
 
-        logger.debug('Popup selections', options);
+    appendLog("Selections: " + JSON.stringify(opts, null, 2));
+    logger.info("▶ Capture options:", opts);
 
-        chrome.runtime.sendMessage({ type: 'CAPTURE_WITH_OPTIONS', options });
-    });
-
-    function appendLog(msg) {
-        const line = document.createElement('div');
-        line.textContent = msg;
-        logDiv.appendChild(line);
-        logDiv.scrollTop = logDiv.scrollHeight;
-    }
+    // (C) Dispatch to background.js
+    chrome.runtime.sendMessage(
+      { type: "CAPTURE_WITH_OPTIONS", options: opts },
+      (resp) => {
+        if (chrome.runtime.lastError) {
+          appendLog("❌ Error sending CAPTURE_WITH_OPTIONS—maybe background.js isn’t ready?");
+          logger.error("Error sending CAPTURE_WITH_OPTIONS:", chrome.runtime.lastError);
+        } else {
+          appendLog("✅ Capture request dispatched.");
+        }
+      }
+    );
+  });
 });

@@ -1,163 +1,141 @@
+// ─────────────────────────────────────────────────────────────────────────────
 // Browser_Addins/General/Chrome/background.js
-import './logger.js';   // ← ensures `self.logger` is defined
+//
+// Background service worker (Manifest V3).  Listens for popup messages and
+// invokes fullPageCapture(...) when “screenshot” is requested.
+// ─────────────────────────────────────────────────────────────────────────────
 
-self.logger.info('Service worker starting…');
+import './logger.js';                // ensure “self.logger” exists
+import { fullPageCapture } from './screenshot.js';
 
-const MIN_INTERVAL_MS = 350;  // throttle between screenshots
+
+self.logger.info("Service worker starting…");
+
+// (Optional) Throttle constant if you want another layer of rate limiting
+const MIN_INTERVAL_MS = 350;
 let lastCapture = 0;
 
-// If the user clicks the toolbar icon directly (fallback):
 chrome.action.onClicked.addListener((tab) => {
+  // If user clicks the icon without opening the popup, we default to HTML+outline
   chrome.runtime.sendMessage({
-    type: 'CAPTURE_WITH_OPTIONS',
-    options: { main: ['screenshot', 'outline', 'html'] }
+    type: "CAPTURE_WITH_OPTIONS",
+    options: { main: ["screenshot", "outline", "html"] },
   });
 });
 
-// Listen for messages from popup.js
-chrome.runtime.onMessage.addListener((msg, _sender) => {
-  if (msg.type !== 'CAPTURE_WITH_OPTIONS') return;
+// When popup sends “CAPTURE_WITH_OPTIONS”, runCaptureWithOptions(...) is invoked
+chrome.runtime.onMessage.addListener((msg, _sender, sendResp) => {
+  if (msg.type !== "CAPTURE_WITH_OPTIONS") return;
+
   const opts = msg.options || {};
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tab = tabs[0];
-    runCaptureWithOptions(tab, opts);
+    runCaptureWithOptions(tab, opts).catch((err) => {
+      console.error("runCaptureWithOptions threw:", err);
+      self.logger.error("▶ runCaptureWithOptions error:", err);
+    });
   });
-  return true;  // keep channel open for potential async replies
+
+  return true; // signal “I will respond asynchronously (if needed)”
 });
 
+/**
+ * Given a tab and a set of options, perform:
+ *   1) Send CAPTURE_NOW to capture.js to get { html, outline, text }
+ *   2) Download main html/json/txt if requested.
+ *   3) Call fullPageCapture(...) if screenshot requested.
+ *   4) (Later) Perform pane captures (not yet implemented).
+ */
 async function runCaptureWithOptions(tab, opts) {
-  self.logger.info('▶ Capture started for', tab.url, opts);
+  self.logger.info("▶ Capture started for", tab.url, opts);
 
-  // 1) Ask the content script for HTML / outline / text
+  // Step 1: get html / outline / text from capture.js
   let resp;
   try {
-    resp = await chrome.tabs.sendMessage(tab.id, { type: 'CAPTURE_NOW' });
+    resp = await chrome.tabs.sendMessage(tab.id, { type: "CAPTURE_NOW" });
   } catch (err) {
-    // Likely no capture.js listener injected
-    self.logger.error('Error sending CAPTURE_NOW—no capture.js listener?', err);
+    self.logger.error("Error sending CAPTURE_NOW—maybe capture.js isn’t injected?", err);
     return;
   }
   if (!resp) {
-    self.logger.warn('No response from capture.js (resp was undefined). Did you refresh the tab?');
+    self.logger.warn(
+      "No response from capture.js (resp was undefined). Did you refresh the page?"
+    );
     return;
   }
-  self.logger.debug('→ Received CAPTURE_NOW response', resp);
+  self.logger.debug("→ Received CAPTURE_NOW response", resp);
 
+  // Build the “base” filename prefix
   const base = toFilename(tab.url);
-  const mainOpts = opts.main || [];
 
-  // 2a) Save HTML
-  if (mainOpts.includes('html')) {
-    self.logger.debug('Saving HTML:', `${base}.html`);
+  // Step 2: Download main window artifacts
+  const mainOpts = opts.main || []; // e.g. ["screenshot","outline","html","text"]
+
+  // HTML
+  if (mainOpts.includes("html")) {
+    self.logger.debug("Saving HTML:", `${base}.html`);
     chrome.downloads.download({
-      url: dataUrl(resp.html, 'text/html'),
-      filename: `${base}.html`
+      url: dataUrl(resp.html, "text/html"),
+      filename: `${base}.html`,
     });
   }
 
-  // 2b) Save OUTLINE (JSON)
-  if (mainOpts.includes('outline')) {
-    self.logger.debug('Saving Outline:', `${base}.json`);
+  // Outline (JSON)
+  if (mainOpts.includes("outline")) {
+    self.logger.debug("Saving OUTLINE JSON:", `${base}.json`);
     chrome.downloads.download({
-      url: dataUrl(JSON.stringify(resp.outline, null, 2), 'application/json'),
-      filename: `${base}.json`
+      url: dataUrl(JSON.stringify(resp.outline, null, 2), "application/json"),
+      filename: `${base}.json`,
     });
   }
 
-  // 2c) Save TEXT
-  if (mainOpts.includes('text')) {
-    self.logger.debug('Saving Text:', `${base}.txt`);
+  // Text
+  if (mainOpts.includes("text")) {
+    self.logger.debug("Saving TEXT:", `${base}.txt`);
     chrome.downloads.download({
-      url: dataUrl(resp.text, 'text/plain'),
-      filename: `${base}.txt`
+      url: dataUrl(resp.text, "text/plain"),
+      filename: `${base}.txt`,
     });
   }
 
-  // 2d) Full-page screenshot
-  if (mainOpts.includes('screenshot')) {
-    await fullPageCapture(tab, base, { saveTiles: false, imgType: 'png' });
+  // Screenshot (full page)
+  if (mainOpts.includes("screenshot")) {
+    try {
+      await fullPageCapture(tab, base, { saveTiles: false, imgType: "png" });
+      self.logger.info("✓ fullPageCapture complete for", `${base}_full.png`);
+    } catch (err) {
+      self.logger.error("[E] fullPageCapture failed to convert stitched canvas to Blob:", err);
+    }
   }
 
-  // 3) Placeholder for pane‐specific captures
+  // Step 3: Panes (future—currently just logs a warning)
   Object.entries(opts)
-    .filter(([k]) => k !== 'main')
-    .forEach(([paneId, actions]) => {
-      self.logger.warn('Pane capture not yet implemented for pane:', paneId, actions);
+    .filter(([k]) => k !== "main")
+    .forEach(async ([paneId, actions]) => {
+      if (actions.length > 0) {
+        self.logger.warn("Pane capture not yet implemented for pane:", paneId, actions);
+      }
     });
 }
 
-// ─── Full-page capture (tiles + stitch) ─────────────────────────────────────────
-async function fullPageCapture(tab, base, { saveTiles, imgType }) {
-  // Throttle to avoid overwhelming the tab
-  const now = Date.now();
-  if (now - lastCapture < MIN_INTERVAL_MS) {
-    await new Promise((resolve) => setTimeout(resolve, MIN_INTERVAL_MS - (now - lastCapture)));
-  }
-  lastCapture = Date.now();
-
-  // 1) Ask for total/document dimensions
-  const dims = await chrome.tabs.sendMessage(tab.id, { type: 'GET_DIMENSIONS' });
-  let scrollY = 0;
-  const shots = [];
-
-  // 2) Scroll + capture tiles
-  while (scrollY < dims.totalHeight) {
-    await chrome.tabs.sendMessage(tab.id, { type: 'SCROLL_TO', y: scrollY });
-    await delay(150);
-    const dataUrl_ = await new Promise((resolve) =>
-      chrome.tabs.captureVisibleTab(tab.windowId, { format: imgType }, resolve)
-    );
-    shots.push({ dataUrl: dataUrl_, y: scrollY });
-    scrollY += dims.viewportHeight;
-  }
-
-  // 3) (Optional) Save individual tile images
-  if (saveTiles) {
-    shots.forEach((s, index) => {
-      const tileName = `${base}_tile_${String(index).padStart(3, '0')}.${imgType}`;
-      self.logger.debug('Saving tile image:', tileName);
-      chrome.downloads.download({
-        url: s.dataUrl,
-        filename: tileName
-      });
-    });
-  }
-
-  // 4) Stitch tiles into one tall image
-  const bitmaps = await Promise.all(shots.map((s) => dataUrlToBitmap(s.dataUrl)));
-  const stitchedHeight = Math.ceil(dims.totalHeight * (dims.devicePixelRatio || 1));
-  const canvas = new OffscreenCanvas(bitmaps[0].width, stitchedHeight);
-  const ctx = canvas.getContext('2d');
-  bitmaps.forEach((bmp, idx) => {
-    ctx.drawImage(bmp, 0, shots[idx].y * dims.devicePixelRatio);
-  });
-  const blob = await canvas.convertToBlob({ type: `image/${imgType}` });
-  const fullName = `${base}_full.${imgType}`;
-  self.logger.debug('Saving stitched image:', fullName);
-  chrome.downloads.download({
-    url: URL.createObjectURL(blob),
-    filename: fullName
-  });
-}
-
-// ─── Helpers ───────────────────────────────────────────────────────────────────
-function toFilename(u) {
-  const hostname = new URL(u).hostname.replace(/[^a-z0-9.-]/gi, '_');
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-  return `Capture_${hostname}_${timestamp}`;
-}
-
+/**
+ * Convert a string → a dataURL with the given MIME type.
+ */
 function dataUrl(str, mime) {
-  return `data:${mime};charset=utf-8,` + encodeURIComponent(str);
+  return "data:" + mime + ";charset=utf-8," + encodeURIComponent(str);
 }
 
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+/**
+ * Turn any URL into a “safe” filename prefix.  E.g. 
+ *   "https://www.foo.com/" → "Capture_www.foo.com_2025-06-01T…"
+ */
+function toFilename(url) {
+  const u = new URL(url);
+  const host = u.hostname.replace(/[^a-z0-9.-]/gi, "_");
+  const ts = new Date()
+    .toISOString()
+    .replace(/[:.]/g, "-"); // e.g. "2025-06-01T21-55-44-514Z"
+  return `Capture_${host}_${ts}`;
 }
 
-async function dataUrlToBitmap(url) {
-  const blob = await (await fetch(url)).blob();
-  return createImageBitmap(blob);
-}
-
-self.logger.info('Service worker initialized');
+self.logger.info("Service worker initialized");
