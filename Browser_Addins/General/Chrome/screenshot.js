@@ -72,10 +72,121 @@ async function dataUrlToBitmap(dataUrl) {
  *   4. Stitches all the ImageBitmaps into one tall OffscreenCanvas, converts that to a Blob,
  *      turns the Blob into a Data URL, and triggers a single “_full.png” download.
  */
-async function fullPageCapture(tab, baseName, { saveTiles, imgType }) {
-  let lastCaptureTime = 0;
-  let dimensions;
 
+// async function fullPageCapture(tab, baseName, { saveTiles, imgType }) {
+//   let lastCaptureTime = 0;
+//   let dimensions;
+
+//   // 1) Ask the content script for page dimensions
+//   try {
+//     dimensions = await chrome.tabs.sendMessage(tab.id, { type: 'GET_DIMENSIONS' });
+//   } catch (err) {
+//     console.error('[E] fullPageCapture: could not GET_DIMENSIONS:', err);
+//     return;
+//   }
+
+//   // ───────────────────────────────────────────────────────────────────────────
+//   // 1a) Force the page to scroll to the very top before capturing
+//   await chrome.tabs.sendMessage(tab.id, { type: 'SCROLL_TO', y: 0 });
+//   // Wait briefly (300ms) to give the browser time to finish scrolling & layout
+//   await new Promise((resolve) => setTimeout(resolve, 300));
+//   // ───────────────────────────────────────────────────────────────────────────
+
+
+//   const totalHeight = dimensions.totalHeight;       // e.g. document.documentElement.scrollHeight
+//   const viewportHeight = dimensions.viewportHeight; // e.g. window.innerHeight
+//   const dpr = dimensions.devicePixelRatio || 1;     // devicePixelRatio
+
+//   let scrollY = 0;
+//   const shots = [];   // will hold { dataUrl, y } for each capture step
+
+//   // 2) Scroll-and-capture loop
+//   while (scrollY < totalHeight) {
+//     // Enforce throttle so we don't hit Chrome’s CAPTURE_VISIBLE_TAB limit
+//     const now = Date.now();
+//     if (now - lastCaptureTime < MIN_INTERVAL_MS) {
+//       await delay(MIN_INTERVAL_MS - (now - lastCaptureTime));
+//     }
+//     lastCaptureTime = Date.now();
+
+//     // Send a message to scroll the page
+//     await chrome.tabs.sendMessage(tab.id, { type: 'SCROLL_TO', y: scrollY });
+//     // Give the page a moment to settle
+//     await delay(150);
+
+//     // Capture the visible viewport as a Data URL
+//     const dataUrl_ = await new Promise((resolve) => {
+//       chrome.tabs.captureVisibleTab(tab.windowId, { format: imgType }, (url) => {
+//         resolve(url);
+//       });
+//     });
+
+//     if (!dataUrl_) {
+//       console.error('[E] fullPageCapture: captureVisibleTab returned null/undefined');
+//       break;
+//     }
+
+//     shots.push({ dataUrl: dataUrl_, y: scrollY });
+//     scrollY += viewportHeight;
+//   }
+
+//   // If no tiles were captured, bail out
+//   if (shots.length === 0) {
+//     console.warn('[W] fullPageCapture: no viewport captures succeeded.');
+//     return;
+//   }
+
+//   // 3) Save each tile individually (if requested)
+//   if (saveTiles) {
+//     for (let i = 0; i < shots.length; i++) {
+//       const s = shots[i];
+//       const tileFilename = `${baseName}_tile_${String(i).padStart(3, '0')}.${imgType}`;
+//       chrome.downloads.download({
+//         url: s.dataUrl,
+//         filename: tileFilename
+//       });
+//     }
+//   }
+
+//   // 4) Stitch all ImageBitmaps into a single tall canvas
+//   try {
+//     // Convert each dataUrl → ImageBitmap
+//     const bitmaps = await Promise.all(
+//       shots.map((s) => dataUrlToBitmap(s.dataUrl))
+//     );
+
+//     const canvasWidth = bitmaps[0].width;
+//     const canvasHeight = Math.ceil(totalHeight * dpr);
+//     const offscreen = new OffscreenCanvas(canvasWidth, canvasHeight);
+//     const ctx = offscreen.getContext('2d');
+
+//     // Draw each bitmap at the correct Y position
+//     for (let i = 0; i < bitmaps.length; i++) {
+//       const bmp = bitmaps[i];
+//       const drawY = shots[i].y * dpr;
+//       ctx.drawImage(bmp, 0, drawY);
+//     }
+
+//     // Convert the stitched OffscreenCanvas to a Blob
+//     const stitchedBlob = await offscreen.convertToBlob({ type: `image/${imgType}` });
+//     // Turn that Blob into a Data URL
+//     const stitchedDataUrl = await blobToDataUrl(stitchedBlob);
+
+//     // Finally, download the stitched version as one file
+//     const stitchedFilename = `${baseName}_full.${imgType}`;
+//     chrome.downloads.download({
+//       url: stitchedDataUrl,
+//       filename: stitchedFilename
+//     });
+
+//   } catch (err) {
+//     console.error('[E] fullPageCapture failed to stitch:', err);
+//     throw new Error(`fullPageCapture: stitching error: ${err.message}`);
+//   }
+// }
+
+async function fullPageCapture(tab, baseName, { saveTiles, imgType }) {
+  let dimensions;
   // 1) Ask the content script for page dimensions
   try {
     dimensions = await chrome.tabs.sendMessage(tab.id, { type: 'GET_DIMENSIONS' });
@@ -84,70 +195,62 @@ async function fullPageCapture(tab, baseName, { saveTiles, imgType }) {
     return;
   }
 
-  // ───────────────────────────────────────────────────────────────────────────
-  // 1a) Force the page to scroll to the very top before capturing
-  await chrome.tabs.sendMessage(tab.id, { type: 'SCROLL_TO', y: 0 });
-  // Wait briefly (300ms) to give the browser time to finish scrolling & layout
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  // ───────────────────────────────────────────────────────────────────────────
-
-
   const totalHeight = dimensions.totalHeight;       // e.g. document.documentElement.scrollHeight
   const viewportHeight = dimensions.viewportHeight; // e.g. window.innerHeight
   const dpr = dimensions.devicePixelRatio || 1;     // devicePixelRatio
 
-  let scrollY = 0;
-  const shots = [];   // will hold { dataUrl, y } for each capture step
+  // ─────────────────────────────────────────────────────────────────────────────
+  // 1a) Force the page to scroll to the very top before capturing
+  await chrome.tabs.sendMessage(tab.id, { type: 'SCROLL_TO', y: 0 });
+  // Wait 300ms to let the browser finish rendering at top
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  // ─────────────────────────────────────────────────────────────────────────────
 
-  // 2) Scroll-and-capture loop
-  while (scrollY < totalHeight) {
-    // Enforce throttle so we don't hit Chrome’s CAPTURE_VISIBLE_TAB limit
-    const now = Date.now();
-    if (now - lastCaptureTime < MIN_INTERVAL_MS) {
-      await delay(MIN_INTERVAL_MS - (now - lastCaptureTime));
-    }
-    lastCaptureTime = Date.now();
+  // 2) Determine exactly how many “tiles” we need
+  const numTiles = Math.ceil(totalHeight / viewportHeight);
 
-    // Send a message to scroll the page
-    await chrome.tabs.sendMessage(tab.id, { type: 'SCROLL_TO', y: scrollY });
-    // Give the page a moment to settle
-    await delay(150);
+  const shots = []; // will hold { dataUrl, y } for each tile
 
-    // Capture the visible viewport as a Data URL
-    const dataUrl_ = await new Promise((resolve) => {
-      chrome.tabs.captureVisibleTab(tab.windowId, { format: imgType }, (url) => {
-        resolve(url);
-      });
-    });
+  // 3) Loop over each tile index from 0 to numTiles - 1
+  for (let i = 0; i < numTiles; i++) {
+    const scrollY = i * viewportHeight;
 
-    if (!dataUrl_) {
-      console.error('[E] fullPageCapture: captureVisibleTab returned null/undefined');
+    // 3a) Scroll to this Y position
+    try {
+      await chrome.tabs.sendMessage(tab.id, { type: 'SCROLL_TO', y: scrollY });
+    } catch (err) {
+      console.error('[E] fullPageCapture: could not SCROLL_TO:', err);
       break;
     }
 
-    shots.push({ dataUrl: dataUrl_, y: scrollY });
-    scrollY += viewportHeight;
+    // 3b) Wait a short delay so that scrolling & rendering complete
+    await new Promise((resolve) => setTimeout(resolve, MIN_INTERVAL_MS));
+
+    // 3c) Capture the visible viewport as a data URL
+    const captureDataUrl = await new Promise((resolve) => {
+      chrome.tabs.captureVisibleTab(
+        tab.windowId,
+        { format: imgType, quality: 100 },
+        (dataUrl) => resolve(dataUrl)
+      );
+    });
+
+    shots.push({ dataUrl: captureDataUrl, y: scrollY });
   }
 
-  // If no tiles were captured, bail out
-  if (shots.length === 0) {
-    console.warn('[W] fullPageCapture: no viewport captures succeeded.');
-    return;
-  }
-
-  // 3) Save each tile individually (if requested)
+  // 4) If saveTiles is true, download each tile individually
   if (saveTiles) {
     for (let i = 0; i < shots.length; i++) {
-      const s = shots[i];
+      const { dataUrl } = shots[i];
       const tileFilename = `${baseName}_tile_${String(i).padStart(3, '0')}.${imgType}`;
       chrome.downloads.download({
-        url: s.dataUrl,
+        url: dataUrl,
         filename: tileFilename
       });
     }
   }
 
-  // 4) Stitch all ImageBitmaps into a single tall canvas
+  // 5) Always stitch all tiles into one “full‐page” image and download it
   try {
     // Convert each dataUrl → ImageBitmap
     const bitmaps = await Promise.all(
@@ -159,30 +262,30 @@ async function fullPageCapture(tab, baseName, { saveTiles, imgType }) {
     const offscreen = new OffscreenCanvas(canvasWidth, canvasHeight);
     const ctx = offscreen.getContext('2d');
 
-    // Draw each bitmap at the correct Y position
+    // Draw each bitmap at its correct Y offset
     for (let i = 0; i < bitmaps.length; i++) {
       const bmp = bitmaps[i];
       const drawY = shots[i].y * dpr;
       ctx.drawImage(bmp, 0, drawY);
     }
 
-    // Convert the stitched OffscreenCanvas to a Blob
+    // Convert stitched OffscreenCanvas to a Blob
     const stitchedBlob = await offscreen.convertToBlob({ type: `image/${imgType}` });
-    // Turn that Blob into a Data URL
+    // Convert Blob → data URL
     const stitchedDataUrl = await blobToDataUrl(stitchedBlob);
 
-    // Finally, download the stitched version as one file
+    // Download the final “full‐page” PNG
     const stitchedFilename = `${baseName}_full.${imgType}`;
     chrome.downloads.download({
       url: stitchedDataUrl,
       filename: stitchedFilename
     });
-
   } catch (err) {
     console.error('[E] fullPageCapture failed to stitch:', err);
     throw new Error(`fullPageCapture: stitching error: ${err.message}`);
   }
 }
+
 
 // ─── EXPORTS FOR MV3 IMPORT ───────────────────────────────────────────────────
 
