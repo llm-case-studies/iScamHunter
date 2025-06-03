@@ -5,7 +5,7 @@
 // ─── CONSTANTS ──────────────────────────────────────────────────────────────
 
 // Minimum delay between two captureVisibleTab calls (in milliseconds)
-const MIN_INTERVAL_MS = 500;  
+const MIN_INTERVAL_MS = 500;
 
 // ─── UTILITY FUNCTIONS ───────────────────────────────────────────────────────
 
@@ -83,6 +83,14 @@ async function fullPageCapture(tab, baseName, { saveTiles, imgType }) {
     console.error('[E] fullPageCapture: could not GET_DIMENSIONS:', err);
     return;
   }
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // 1a) Force the page to scroll to the very top before capturing
+  await chrome.tabs.sendMessage(tab.id, { type: 'SCROLL_TO', y: 0 });
+  // Wait briefly (300ms) to give the browser time to finish scrolling & layout
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  // ───────────────────────────────────────────────────────────────────────────
+
 
   const totalHeight = dimensions.totalHeight;       // e.g. document.documentElement.scrollHeight
   const viewportHeight = dimensions.viewportHeight; // e.g. window.innerHeight

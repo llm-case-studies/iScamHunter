@@ -101,7 +101,11 @@ async function runCaptureWithOptions(tab, opts) {
   // Screenshot (full page)
   if (mainOpts.includes("screenshot")) {
     try {
-      await fullPageCapture(tab, base, { saveTiles: false, imgType: "png" });
+      // await fullPageCapture(tab, base, { saveTiles: false, imgType: "png" });
+      const saveTilesFlag = !!opts.saveTiles;
+      console.log("saveTilesFlag =", saveTilesFlag);
+      await fullPageCapture(tab, base, { saveTiles: saveTilesFlag, imgType: "png" });
+
       self.logger.info("✓ fullPageCapture complete for", `${base}_full.png`);
     } catch (err) {
       self.logger.error("[E] fullPageCapture failed to convert stitched canvas to Blob:", err);

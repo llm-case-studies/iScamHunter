@@ -91,11 +91,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // (A) Build the “main” array
     const opts = {};
+
     const mainSelections = [];
+    let saveTiles = false;
+
     document.querySelectorAll('fieldset input[type=checkbox][data-id]').forEach((cb) => {
-      if (cb.checked) mainSelections.push(cb.dataset.id);
+      if (!cb.checked) return;
+      if (cb.dataset.id === "tiles") {
+        saveTiles = true;
+      } else {
+        mainSelections.push(cb.dataset.id);
+      }
     });
-    opts.main = mainSelections; // e.g. ["screenshot","outline","html","text"]
+
+    opts.main = mainSelections;
+    opts.saveTiles = saveTiles;
 
     // (B) Build each pane’s array
     document
