@@ -20,3 +20,10 @@ Thumbs.db
 # --- browser-extension runtime captures ---
 /Browser_Addins/**/Captures/
 
+
+# CF raw captures (keep only extracted content/)
+cf-capture/funnels/
+cf-capture/products/
+cf-capture/store/
+cf-capture/automations/
+
