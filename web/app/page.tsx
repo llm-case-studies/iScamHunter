@@ -40,7 +40,7 @@ export default function Home() {
         <div className="container mx-auto px-6 py-4 flex justify-between items-center">
           <div className="relative w-40 h-12">
             <Image
-              src="/assets/logo/Logo_Draft_With_Transparency.svg"
+              src="/assets/logo/variants/logo_white.svg"
               alt="Scam Hunters"
               fill
               className="object-contain"
@@ -52,8 +52,8 @@ export default function Home() {
                 key={section.id}
                 href={`#${section.id}`}
                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${activeSection === i
-                    ? 'bg-white/10 text-white'
-                    : 'text-gray-400 hover:text-white'
+                  ? 'bg-white/10 text-white'
+                  : 'text-gray-400 hover:text-white'
                   }`}
               >
                 {section.label}
@@ -355,7 +355,7 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="relative w-32 h-10">
               <Image
-                src="/assets/logo/Logo_Draft_With_Transparency.svg"
+                src="/assets/logo/variants/logo_white.svg"
                 alt="Scam Hunters"
                 fill
                 className="object-contain"
