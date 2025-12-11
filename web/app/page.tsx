@@ -84,6 +84,13 @@ export default function Home() {
                 {section.label}
               </Link>
             ))}
+            <div className="w-px h-6 bg-white/10 mx-2" />
+            <Link
+              href="/lab"
+              className="px-4 py-2 rounded-full text-sm font-medium text-amber-500 hover:text-amber-400 hover:bg-amber-500/10 transition-all border border-amber-500/20"
+            >
+              The Lab 🧬
+            </Link>
           </div>
           <Link
             href="#join"
