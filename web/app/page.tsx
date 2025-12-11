@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
+import MeetLLM from "./components/MeetLLM";
 
 export default function Home() {
   const [activeSection, setActiveSection] = useState(0);
@@ -237,6 +238,10 @@ export default function Home() {
               title="Rapid Response"
               description="Track, disrupt, and dismantle scam networks before they spread"
             />
+          </div>
+
+          <div className="max-w-md mx-auto mt-16">
+            <MeetLLM />
           </div>
 
           {/* Quote */}
