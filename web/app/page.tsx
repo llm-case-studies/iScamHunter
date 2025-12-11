@@ -9,10 +9,6 @@ export default function Home() {
   const [isVisible, setIsVisible] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setIsVisible(true);
-  }, []);
-
   const sections = [
     { id: 'story', label: 'Our Story' },
     { id: 'movement', label: 'The Movement' },
@@ -20,6 +16,34 @@ export default function Home() {
     { id: 'proof', label: 'Results' },
     { id: 'join', label: 'Join' },
   ];
+
+  useEffect(() => {
+    setIsVisible(true);
+
+    // Scroll-based section detection
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = sections.findIndex(s => s.id === entry.target.id);
+            if (index !== -1) {
+              setActiveSection(index);
+            }
+          }
+        });
+      },
+      { rootMargin: '-40% 0px -40% 0px', threshold: 0 }
+    );
+
+    // Observe all sections
+    sections.forEach(({ id }) => {
+      const element = document.getElementById(id);
+      if (element) observer.observe(element);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
 
   return (
     <div className="min-h-screen font-sans overflow-x-hidden" style={{ backgroundColor: '#0a0a0b' }}>
