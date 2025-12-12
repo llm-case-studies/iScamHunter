@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder', {
     apiVersion: '2025-01-27.acacia', // Latest API version
 });
 
@@ -23,26 +23,40 @@ export async function POST(req: Request) {
         }
 
         const lineItems = items.map((item: any) => {
-            const product = PRODUCT_CATALOG[item.id];
+            // 1. Check for Interceptor Modifications (The "Pattern")
+            const isVolunteer = item.id.endsWith('-volunteer');
+            const baseId = isVolunteer ? item.id.replace('-volunteer', '') : item.id;
+
+            const product = PRODUCT_CATALOG[baseId];
             if (!product) throw new Error(`Invalid Product ID: ${item.id}`);
+
+            // 2. Apply Dynamic Pricing Logic
+            let finalPrice = product.price;
+            let finalName = product.name;
+
+            if (isVolunteer) {
+                finalPrice = Math.round(product.price * 0.85); // 15% Discount
+                finalName = `${product.name} (Volunteer Rate)`;
+            }
 
             return {
                 price_data: {
                     currency: 'usd',
                     product_data: {
-                        name: product.name,
+                        name: finalName,
                     },
-                    unit_amount: product.price,
+                    unit_amount: finalPrice,
                 },
                 quantity: item.quantity || 1,
             };
         });
 
-        // Create Checkout Session
+        // Create Checkout Session with Metadata
         const session = await stripe.checkout.sessions.create({
             ui_mode: 'embedded',
             line_items: lineItems,
             mode: 'payment',
+            metadata: body.metadata || {}, // Capture the "Soft Hope" pledge
             return_url: `${req.headers.get('origin')}/return?session_id={CHECKOUT_SESSION_ID}`,
         });
 

@@ -27,6 +27,7 @@
 - **Migration Strategy:** Replace with Stripe (Embedded Checkout).
 - **Status:** ✅ **IMPLEMENTED (Pending Keys)**
 - **Artifacts:** `web/app/checkout/page.tsx`, `web/app/api/checkout_sessions/route.ts`
+- **New Pattern:** **"Funnel Interceptor"** (`FunnelInterceptor.tsx`). A middleware React component that allows "Order Bump" psychology (Upsells/Pledges) before the Stripe Checkout flow.
 
 ## 04. Fulfillment (POD)
 - **Legacy (CF):** Manual/Zapier glue?
