@@ -38,3 +38,18 @@ model Badge {
 
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  price       Int      // In cents
+  currency    String   @default("usd")
+  image       String?
+  provider    String   @default("internal") // zendrop, shopify, printful
+  externalId  String?  // ID in the provider system
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+

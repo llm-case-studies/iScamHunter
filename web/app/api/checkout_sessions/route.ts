@@ -1,17 +1,12 @@
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
+import { PrismaClient } from '@prisma/client';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder', {
     apiVersion: '2025-11-17.clover', // Validated against installed type definition
 });
 
-// Secure Pricing Map
-const PRODUCT_CATALOG: Record<string, { price: number; name: string }> = {
-    'sh-hoodie-001': { price: 6995, name: 'Scam Hunters™ Hoodie' },
-    'sh-ishield-001': { price: 1895, name: 'iShield Case' },
-    'sh-deskmat-001': { price: 2595, name: 'War Room Desk Mat' },
-    'sh-donation-001': { price: 100, name: 'Community Donation' },
-};
+const prisma = new PrismaClient();
 
 export async function POST(req: Request) {
     try {
@@ -22,15 +17,21 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: 'Invalid items format' }, { status: 400 });
         }
 
-        const lineItems = items.map((item: any) => {
+        const lineItems = [];
+
+        for (const item of items) {
             // 1. Check for Interceptor Modifications (The "Pattern")
             const isVolunteer = item.id.endsWith('-volunteer');
             const baseId = isVolunteer ? item.id.replace('-volunteer', '') : item.id;
 
-            const product = PRODUCT_CATALOG[baseId];
+            // 2. Fetch Product from DB (Replacing Hardcoded Catalog)
+            const product = await prisma.product.findUnique({
+                where: { id: baseId }
+            });
+
             if (!product) throw new Error(`Invalid Product ID: ${item.id}`);
 
-            // 2. Apply Dynamic Pricing Logic
+            // 3. Apply Dynamic Pricing Logic
             let finalPrice = product.price;
             let finalName = product.name;
 
@@ -39,17 +40,22 @@ export async function POST(req: Request) {
                 finalName = `${product.name} (Volunteer Rate)`;
             }
 
-            return {
+            lineItems.push({
                 price_data: {
-                    currency: 'usd',
+                    currency: product.currency,
                     product_data: {
                         name: finalName,
+                        images: product.image ? [product.image] : [],
+                        metadata: {
+                            provider: product.provider,
+                            externalId: product.externalId
+                        }
                     },
                     unit_amount: finalPrice,
                 },
                 quantity: item.quantity || 1,
-            };
-        });
+            });
+        }
 
         // Create Checkout Session with Metadata
         const session = await stripe.checkout.sessions.create({
