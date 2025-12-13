@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String?   @unique
+  name          String?
+  rank          String    @default("Novice Hunter")
+  xp            Int       @default(0)
+  joinedAt      DateTime  @default(now())
+  
+  progress      AcademyProgress[]
+  badges        Badge[]
+}
+
+model AcademyProgress {
+  id        String   @id @default(cuid())
+  userId    String
+  lessonId  String
+  completedAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, lessonId])
+}
+
+model Badge {
+  id        String   @id @default(cuid())
+  userId    String
+  slug      String   // e.g., 'academy-graduate', 'first-blood'
+  awardedAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
