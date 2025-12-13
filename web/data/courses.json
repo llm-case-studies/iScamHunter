@@ -1,0 +1,52 @@
+{
+    "courses": [
+        {
+            "id": "scam-hunters-academy",
+            "title": "Scam Hunters Academy",
+            "modules": [
+                {
+                    "id": "welcome",
+                    "title": "Welcome",
+                    "lessons": [
+                        {
+                            "id": "start-here",
+                            "title": "Start here",
+                            "duration": "5m",
+                            "description": "Essential introduction to the platform."
+                        },
+                        {
+                            "id": "schedule",
+                            "title": "Schedule",
+                            "duration": "2m",
+                            "description": "How the course is structured and when to expect new content."
+                        },
+                        {
+                            "id": "bonuses",
+                            "title": "Bonuses",
+                            "duration": "1m",
+                            "description": "Extra resources available to you."
+                        }
+                    ]
+                },
+                {
+                    "id": "module-1-why",
+                    "title": "Module 1: Why?",
+                    "lessons": [
+                        {
+                            "id": "introduction",
+                            "title": "Introduction",
+                            "duration": "10m",
+                            "description": "Understanding the 'Why' behind scam hunting."
+                        },
+                        {
+                            "id": "mindset",
+                            "title": "Mindset",
+                            "duration": "15m",
+                            "description": "Developing the psychological resilience of a scam hunter."
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

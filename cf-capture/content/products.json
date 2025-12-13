@@ -1,0 +1,38 @@
+[
+    {
+        "id": "sh-hoodie-001",
+        "name": "Scam Hunters™ Hoodie – Streetwear for the Sharp",
+        "price": 6995,
+        "currency": "USD",
+        "description": "Premium heavyweight hoodie. Streetwear fit.",
+        "category": "Apparel",
+        "image": "af8a324384298da43ca547625abbaad2.webp"
+    },
+    {
+        "id": "sh-ishield-001",
+        "name": "iShield for Scam Hunters – MagSafe Clear Armor",
+        "price": 1895,
+        "currency": "USD",
+        "description": "MagSafe compatible clear case with reinforced corners.",
+        "category": "Accessories",
+        "image": "fd7164459acbf43a7b9db145a1842b6a.webp"
+    },
+    {
+        "id": "sh-deskmat-001",
+        "name": "The War Room Desk Mat",
+        "price": 2595,
+        "currency": "USD",
+        "description": "Extra large desk mat for the ultimate command center.",
+        "category": "Accessories",
+        "image": "9a65180bf7e3ce38e1c85c3c2d771130.webp"
+    },
+    {
+        "id": "sh-donation-001",
+        "name": "Scam Hunters Wanted (Community Support)",
+        "price": 100,
+        "currency": "USD",
+        "description": "Support the cause. Join the posse.",
+        "category": "Donation",
+        "image": "Group 2.svg"
+    }
+]

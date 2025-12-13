@@ -1,0 +1,93 @@
+/* projects/lib/packages/yggdrasil-blueprints/__generated__/dist/contact-profile-v1.css */
+[data-page-element="ContactProfile/V1"] {
+  max-width: 100%;
+}
+[data-page-element="ContactProfile/V1"] .elContactProfileWrapper {
+  position: relative;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+[data-page-element="ContactProfile/V1"] .elContactProfileIcon {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  width: 3em;
+  height: 3em;
+  color: #fff;
+}
+[data-page-element="ContactProfile/V1"] .elContactProfileDefaultIcon {
+  font-size: 18px;
+}
+[data-page-element="ContactProfile/V1"] .elContactProfileModalIcon {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+[data-page-element="ContactProfile/V1"] .elContactProfileIconBg {
+  background: #e0517c;
+}
+[data-page-element="ContactProfile/V1"] .elContactProfileModal {
+  margin: 0px;
+  width: 220px;
+  display: none;
+  gap: 15px;
+  top: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  position: absolute;
+  flex-direction: column;
+  align-items: center;
+  z-index: 10;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+[data-page-element="ContactProfile/V1"] .elContactProfileUserInfo {
+  margin: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+}
+[data-page-element="ContactProfile/V1"] .elContactProfileUserName {
+  width: 100%;
+  text-align: center;
+}
+[data-page-element="ContactProfile/V1"] .elContactProfileUserEmail {
+  width: 100%;
+  display: block;
+  text-align: center;
+  word-break: break-word;
+}
+[data-page-element="ContactProfile/V1"] .elContactProfileLinksWrapper {
+  margin: 0px;
+  padding-left: 15px;
+  width: 100%;
+  display: flex;
+  gap: 0px;
+  flex-direction: column;
+}
+[data-page-element="ContactProfile/V1"] .elContactProfileSignIn {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+[data-page-element="ContactProfile/V1"] .elContactProfileSignIn .fa_prepended {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+[data-page-element="ContactProfile/V1"] .elTypographyLink {
+  color: #1d1d1d;
+  margin: 0px;
+  display: flex;
+  align-items: center;
+}
+[data-page-element="ContactProfile/V1"] .elTypographyLink i {
+  color: inherit;
+  margin: 0px;
+  margin-right: 5px;
+  font-size: calc(100% + 3px);
+}
+/*# sourceMappingURL=contact-profile-v1-74DRKTO4.css.map */

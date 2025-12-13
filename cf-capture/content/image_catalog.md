@@ -56,3 +56,21 @@
 1. **Must keep:** Logo, product shots, mbseal
 2. **Nice to have:** Scam examples (shows authenticity)
 3. **Optional:** Success proof images (can be re-created)
+
+## Checkout Flow Images
+| Filename | Description |
+|---|---|
+| `img_duupjuafq6...png` | Product Bundle? |
+| `testi-star.png` | Star Rating Icon |
+| `bot-icon.png` | Chat Bot Icon |
+| `closemodal-v2.png` | Close Modal Icon |
+| `help_icon_black.svg` | Help Icon |
+| `Logo_Draft_With_Transparency.svg` | Logo (Redundant) |
+
+## Lab Page (Community Hub) Images
+| Filename | Description |
+|---|---|
+| `940989...webp` | Hero/Header Image? |
+| `Group 2.svg` | Graphic Element |
+| `fd716...webp` | Product Thumbnail? |
+| `26ff9...jpg` | Blog/Article Thumbnail? |
