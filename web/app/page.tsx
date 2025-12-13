@@ -86,6 +86,12 @@ export default function Home() {
             ))}
             <div className="w-px h-6 bg-white/10 mx-2" />
             <Link
+              href="/checkout"
+              className="px-4 py-2 rounded-full text-sm font-medium text-gray-400 hover:text-white transition-all"
+            >
+              Shop
+            </Link>
+            <Link
               href="/lab"
               className="px-4 py-2 rounded-full text-sm font-medium text-amber-500 hover:text-amber-400 hover:bg-amber-500/10 transition-all border border-amber-500/20"
             >
@@ -374,7 +380,7 @@ export default function Home() {
 
             <div>
               <Link
-                href="https://iscamhunter.com/store"
+                href="/checkout"
                 className="inline-block px-12 py-5 text-xl font-bold rounded-full transition-all hover:scale-105 shadow-lg"
                 style={{ backgroundColor: '#EFC724', color: '#0a0a0b' }}
               >

@@ -10,7 +10,15 @@
     # Verify: 'cf-capture' folder should be GONE
     ```
 
-2.  **Dependencies & Database**
+2.  **Environment Setup**
+    Create `web/.env.local` with your Stripe keys:
+    ```env
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
+    STRIPE_SECRET_KEY=sk_test_...
+    DATABASE_URL="file:./dev.db"
+    ```
+
+3.  **Dependencies & Database**
     ```bash
     cd web
     npm install
@@ -18,15 +26,19 @@
     npx prisma db seed      # Adds 'Alien Story' & Hoodies
     ```
 
-3.  **Launch**
+4.  **Launch**
     ```bash
     npm run dev
     # Open http://localhost:3000
     ```
 
-4.  **Execute**
+5.  **Execute**
     - Go to `/checkout`.
     - Buy a Hoodie.
+    - **Use Test Card:**
+      - Number: `4242 4242 4242 4242`
+      - Exp: `12/34`
+      - CVC: `123`
     - Check Stripe Dashboard for success.
 
 *Generated: 2025-12-13 | 15:50 EST*
