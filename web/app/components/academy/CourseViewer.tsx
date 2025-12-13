@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ChevronDown, ChevronRight, PlayCircle, CheckCircle, Lock } from 'lucide-react';
+import { ChevronDown, ChevronRight, PlayCircle, CheckCircle, Lock, FileText, Gamepad2 } from 'lucide-react';
 
-interface Lesson {
+export interface Lesson {
     id: string;
+    type: 'video' | 'article' | 'quiz' | 'simulation';
     title: string;
     duration: string;
     description?: string;
@@ -13,14 +14,14 @@ interface Lesson {
     isLocked?: boolean;
 }
 
-interface Module {
+export interface Module {
     id: string;
     title: string;
     lessons: Lesson[];
     isLocked?: boolean;
 }
 
-interface Course {
+export interface Course {
     id: string;
     title: string;
     modules: Module[];
@@ -41,6 +42,22 @@ export function CourseViewer({ course }: CourseViewerProps) {
                 ? prev.filter((id) => id !== moduleId)
                 : [...prev, moduleId]
         );
+    };
+
+    const getLessonIcon = (lesson: Lesson) => {
+        if (lesson.isCompleted) return <CheckCircle className="w-6 h-6 text-green-500" />;
+        if (lesson.isLocked) return <Lock className="w-6 h-6 text-slate-400" />;
+
+        switch (lesson.type) {
+            case 'article':
+                return <FileText className="w-6 h-6 text-blue-500 group-hover:scale-110 transition-transform" />;
+            case 'simulation':
+                return <Gamepad2 className="w-6 h-6 text-purple-500 group-hover:scale-110 transition-transform" />;
+            case 'quiz':
+                return <FileText className="w-6 h-6 text-yellow-500 group-hover:scale-110 transition-transform" />;
+            default: // video
+                return <PlayCircle className="w-6 h-6 text-blue-500 group-hover:scale-110 transition-transform" />;
+        }
     };
 
     return (
@@ -99,13 +116,7 @@ export function CourseViewer({ course }: CourseViewerProps) {
                                                     }`}
                                             >
                                                 <div className="mr-4">
-                                                    {lesson.isCompleted ? (
-                                                        <CheckCircle className="w-6 h-6 text-green-500" />
-                                                    ) : lesson.isLocked ? (
-                                                        <Lock className="w-6 h-6 text-slate-400" />
-                                                    ) : (
-                                                        <PlayCircle className="w-6 h-6 text-blue-500 group-hover:scale-110 transition-transform" />
-                                                    )}
+                                                    {getLessonIcon(lesson)}
                                                 </div>
                                                 <div className="flex-1">
                                                     <h3 className="font-medium text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
@@ -117,8 +128,13 @@ export function CourseViewer({ course }: CourseViewerProps) {
                                                         </p>
                                                     )}
                                                 </div>
-                                                <div className="text-xs font-mono text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300">
-                                                    {lesson.duration}
+                                                <div className="flex flex-col items-end gap-1">
+                                                    <span className="text-xs font-mono text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300">
+                                                        {lesson.duration}
+                                                    </span>
+                                                    <span className="text-[10px] uppercase font-bold text-slate-300 dark:text-slate-600 group-hover:text-slate-500 transition-colors">
+                                                        {lesson.type}
+                                                    </span>
                                                 </div>
                                             </Link>
                                         ))}

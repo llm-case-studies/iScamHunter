@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { CourseViewer } from '@/app/components/academy/CourseViewer';
+import { CourseViewer, Course } from '@/app/components/academy/CourseViewer';
 import coursesData from '@/data/courses.json';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
@@ -11,7 +11,8 @@ interface PageProps {
 }
 
 export default function CoursePage({ params }: PageProps) {
-  const course = coursesData.courses.find((c) => c.id === params.courseId);
+  const courses = (coursesData as unknown as { courses: Course[] }).courses;
+  const course = courses.find((c) => c.id === params.courseId);
 
   if (!course) {
     notFound();

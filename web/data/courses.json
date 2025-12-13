@@ -10,18 +10,21 @@
                     "lessons": [
                         {
                             "id": "start-here",
+                            "type": "video",
                             "title": "Start here",
                             "duration": "5m",
                             "description": "Essential introduction to the platform."
                         },
                         {
                             "id": "schedule",
+                            "type": "article",
                             "title": "Schedule",
                             "duration": "2m",
                             "description": "How the course is structured and when to expect new content."
                         },
                         {
                             "id": "bonuses",
+                            "type": "video",
                             "title": "Bonuses",
                             "duration": "1m",
                             "description": "Extra resources available to you."
@@ -34,15 +37,44 @@
                     "lessons": [
                         {
                             "id": "introduction",
+                            "type": "video",
                             "title": "Introduction",
                             "duration": "10m",
                             "description": "Understanding the 'Why' behind scam hunting."
                         },
                         {
                             "id": "mindset",
+                            "type": "video",
                             "title": "Mindset",
                             "duration": "15m",
                             "description": "Developing the psychological resilience of a scam hunter."
+                        }
+                    ]
+                },
+                {
+                    "id": "module-3-field-ops",
+                    "title": "Module 3: Field Operations",
+                    "lessons": [
+                        {
+                            "id": "recon",
+                            "type": "article",
+                            "title": "Digital Reconnaissance",
+                            "duration": "8m",
+                            "description": "How to safely gather intelligence on a potential scammer."
+                        },
+                        {
+                            "id": "active-signal-sim",
+                            "type": "simulation",
+                            "title": "Simulation: The Bait",
+                            "duration": "10m",
+                            "description": "Interactive scenario: Practice deploying an Active Signal to identify a scammer."
+                        },
+                        {
+                            "id": "reporting-protocols",
+                            "type": "video",
+                            "title": "Reporting Protocols",
+                            "duration": "12m",
+                            "description": "Standard procedures for submitting evidence to authorities."
                         }
                     ]
                 }

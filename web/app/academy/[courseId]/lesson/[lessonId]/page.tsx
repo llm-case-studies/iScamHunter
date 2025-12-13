@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, CheckCircle } from 'lucide-react';
 import { LessonPlayer } from '@/app/components/academy/LessonPlayer';
+import { Course } from '@/app/components/academy/CourseViewer';
 import coursesData from '@/data/courses.json';
 
 interface PageProps {
@@ -12,13 +13,14 @@ interface PageProps {
 }
 
 export default function LessonPage({ params }: PageProps) {
-    const course = coursesData.courses.find((c) => c.id === params.courseId);
-    const module = course?.modules.find((m) =>
+    const courses = (coursesData as unknown as { courses: Course[] }).courses;
+    const course = courses.find((c) => c.id === params.courseId);
+    const courseModule = course?.modules.find((m) =>
         m.lessons.some((l) => l.id === params.lessonId)
     );
-    const lesson = module?.lessons.find((l) => l.id === params.lessonId);
+    const lesson = courseModule?.lessons.find((l) => l.id === params.lessonId);
 
-    if (!course || !module || !lesson) {
+    if (!course || !courseModule || !lesson) {
         notFound();
     }
 
@@ -33,9 +35,9 @@ export default function LessonPage({ params }: PageProps) {
                     Back to Course
                 </Link>
 
-                {/* Video Player */}
+                {/* Content Player */}
                 <div className="mb-8">
-                    <LessonPlayer title={lesson.title} />
+                    <LessonPlayer title={lesson.title} type={lesson.type} />
                 </div>
 
                 {/* Lesson Metadata */}
@@ -43,7 +45,7 @@ export default function LessonPage({ params }: PageProps) {
                     <div className="flex items-start justify-between gap-4">
                         <div>
                             <div className="text-sm font-semibold text-blue-600 dark:text-blue-400 mb-2 uppercase tracking-wider">
-                                {module.title}
+                                {courseModule.title}
                             </div>
                             <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
                                 {lesson.title}
@@ -67,8 +69,8 @@ export default function LessonPage({ params }: PageProps) {
 export function generateStaticParams() {
     const params = [];
     for (const course of coursesData.courses) {
-        for (const module of course.modules) {
-            for (const lesson of module.lessons) {
+        for (const courseModule of course.modules) {
+            for (const lesson of courseModule.lessons) {
                 params.push({
                     courseId: course.id,
                     lessonId: lesson.id,
