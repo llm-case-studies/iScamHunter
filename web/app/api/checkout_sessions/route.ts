@@ -45,6 +45,7 @@ export async function POST(req: Request) {
                     currency: product.currency,
                     product_data: {
                         name: finalName,
+                        description: product.richDescription || undefined,
                         images: product.image ? [product.image] : [],
                         metadata: {
                             provider: product.provider,

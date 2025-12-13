@@ -23,12 +23,13 @@ async function main() {
     const products = [
         {
             id: 'sh-hoodie-001',
-            name: 'Scam Hunters™ Hoodie – Streetwear for the Sharp',
-            description: 'Premium heavyweight hoodie. Streetwear fit. Featuring LadyLasso.',
-            price: 6995,
+            name: 'Scam Hunters™ Hoodie',
+            price: 4999, // $49.99
+            currency: 'usd',
+            image: 'https://files.stripe.com/links/MDB8YWNjdF8xTTJaaHpCa0o1a3FqOXc4fGZsX3Rlc3RfNzZ1M21Vd21zZzFmS0x5MzR3ZzZ4NXVl00e6G2j2pD',
             provider: 'zendrop',
-            externalId: 'zd_123456',
-            image: '/assets/images/af8a324384298da43ca547625abbaad2.webp'
+            externalId: 'ZG-123456',
+            richDescription: 'Premium heavyweight cotton blend. The official uniform of the Hunt. Verify with confidence.'
         },
         {
             id: 'sh-ishield-001',

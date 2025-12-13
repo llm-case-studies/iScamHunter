@@ -48,8 +48,8 @@ model Product {
   image       String?
   provider    String   @default("internal") // zendrop, shopify, printful
   externalId  String?  // ID in the provider system
+  richDescription String?  // Rich description for checkout context
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
-
