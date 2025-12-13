@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import sqlite3 from 'sqlite3';
-import { open } from 'sqlite3';
+
 
 // Absolute path to the database file (matching the location used in init_db.py)
 const DB_PATH = '/media/alex/LargeStorage/Projects/iScamHunter/scouting/data/scams.db';
