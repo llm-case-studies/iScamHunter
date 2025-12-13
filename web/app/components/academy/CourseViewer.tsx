@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronRight, PlayCircle, CheckCircle, Lock } from 'lucide-react';
 
 interface Lesson {
@@ -60,40 +59,39 @@ export function CourseViewer({ course }: CourseViewerProps) {
             </div>
 
             <div className="space-y-6">
-                {course.modules.map((module, moduleIndex) => (
-                    <div
-                        key={module.id}
-                        className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm"
-                    >
-                        <button
-                            onClick={() => toggleModule(module.id)}
-                            className="w-full flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors"
+                {course.modules.map((module, moduleIndex) => {
+                    const isExpanded = expandedModules.includes(module.id);
+                    return (
+                        <div
+                            key={module.id}
+                            className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm"
                         >
-                            <div className="flex items-center gap-3">
-                                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold text-sm">
-                                    {moduleIndex + 1}
+                            <button
+                                onClick={() => toggleModule(module.id)}
+                                className="w-full flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-700/50 transition-colors"
+                            >
+                                <div className="flex items-center gap-3">
+                                    <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold text-sm">
+                                        {moduleIndex + 1}
+                                    </div>
+                                    <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
+                                        {module.title}
+                                    </h2>
                                 </div>
-                                <h2 className="text-lg font-semibold text-slate-800 dark:text-white">
-                                    {module.title}
-                                </h2>
-                            </div>
-                            {expandedModules.includes(module.id) ? (
-                                <ChevronDown className="w-5 h-5 text-slate-400" />
-                            ) : (
-                                <ChevronRight className="w-5 h-5 text-slate-400" />
-                            )}
-                        </button>
+                                {isExpanded ? (
+                                    <ChevronDown className="w-5 h-5 text-slate-400" />
+                                ) : (
+                                    <ChevronRight className="w-5 h-5 text-slate-400" />
+                                )}
+                            </button>
 
-                        <AnimatePresence>
-                            {expandedModules.includes(module.id) && (
-                                <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: 'auto', opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
-                                    transition={{ duration: 0.2 }}
-                                >
+                            <div
+                                className={`grid transition-all duration-300 ease-in-out ${isExpanded ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+                                    }`}
+                            >
+                                <div className="overflow-hidden">
                                     <div className="p-4 space-y-3">
-                                        {module.lessons.map((lesson, lessonIndex) => (
+                                        {module.lessons.map((lesson) => (
                                             <Link
                                                 key={lesson.id}
                                                 href={`/academy/${course.id}/lesson/${lesson.id}`}
@@ -125,11 +123,11 @@ export function CourseViewer({ course }: CourseViewerProps) {
                                             </Link>
                                         ))}
                                     </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </div>
-                ))}
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
