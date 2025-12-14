@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState, Suspense } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import {
     EmbeddedCheckoutProvider,
@@ -12,10 +12,20 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY 
 
 import FunnelInterceptor from '../components/FunnelInterceptor';
 
-export default function CheckoutPage() {
+import { useSearchParams } from 'next/navigation';
+
+function CheckoutContent() {
+    const searchParams = useSearchParams();
+    const productId = searchParams.get('productId');
+
     const [showInterceptor, setShowInterceptor] = useState(true); // Start with Interceptor pattern
     const [cartMetadata, setCartMetadata] = useState({});
-    const [items, setItems] = useState([{ id: 'sh-hoodie-001', quantity: 1 }]);
+
+    // Initialize with passed product or default to hoodie
+    const [items, setItems] = useState([{
+        id: productId || 'sh-hoodie-001',
+        quantity: 1
+    }]);
 
     const fetchClientSecret = useCallback(() => {
         // Create a Checkout Session
@@ -69,5 +79,13 @@ export default function CheckoutPage() {
                 Powered by Stripe • Bank-Grade Security
             </p>
         </div>
+    );
+}
+
+export default function CheckoutPage() {
+    return (
+        <Suspense fallback={<div className="text-white text-center p-20">Loading Secure Environment...</div>}>
+            <CheckoutContent />
+        </Suspense>
     );
 }

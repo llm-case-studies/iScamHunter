@@ -49,6 +49,7 @@ model Product {
   provider    String   @default("internal") // zendrop, shopify, printful
   externalId  String?  // ID in the provider system
   richDescription String?  // Rich description for checkout context
+  specs       String?  // JSON string for product specifications (RAM, etc.)
   
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

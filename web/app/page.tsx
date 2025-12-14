@@ -86,6 +86,12 @@ export default function Home() {
             ))}
             <div className="w-px h-6 bg-white/10 mx-2" />
             <Link
+              href="/products"
+              className="px-4 py-2 rounded-full text-sm font-medium text-gray-400 hover:text-white transition-all"
+            >
+              Armory
+            </Link>
+            <Link
               href="/checkout"
               className="px-4 py-2 rounded-full text-sm font-medium text-gray-400 hover:text-white transition-all"
             >

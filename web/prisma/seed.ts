@@ -56,7 +56,8 @@ async function main() {
             price: 499,
             provider: 'shopify',
             externalId: 'shp_998877',
-            image: '/assets/images/alien-cover.jpg'
+            image: '/assets/images/alien-cover.jpg',
+            specs: JSON.stringify({ format: 'PDF', pages: 42 })
         },
         {
             id: 'sh-donation-001',
@@ -66,6 +67,38 @@ async function main() {
             provider: 'internal',
             externalId: 'don_001',
             image: '/assets/logo/icon.svg'
+        },
+        {
+            id: 'sh-opi-kit-001',
+            name: 'Scam Hunter Node (OrangePi 5+)',
+            description: 'The ultimate counter-scam appliance. Pre-flashed with HunterOS.',
+            price: 14900,
+            provider: 'manual',
+            externalId: 'opi_kit_v1',
+            image: '/assets/images/orangepi5.webp',
+            specs: JSON.stringify({
+                cpu: 'Rockchip RK3588 (8-core)',
+                ram: '16GB LPDDR4x',
+                storage: '256GB NVMe SSD',
+                os: 'HunterOS v1.0 (Debian based)',
+                ports: ['2x 2.5GbE LAN', 'HDMI 2.1', 'USB-C Power']
+            })
+        },
+        {
+            id: 'sh-docker-vllm-001',
+            name: 'Hunt-in-a-Box (Docker Edition)',
+            description: 'Deploy the Scam Hunter stack on your own hardware. Includes vLLM support.',
+            price: 1995,
+            provider: 'digital',
+            externalId: 'docker_vllm_v1',
+            image: '/assets/logo/icon.svg', // Placeholder for container icon
+            specs: JSON.stringify({
+                format: 'Docker Compose + .env',
+                base_image: 'Ubuntu 24.04 LTS (Jammy)',
+                ai_engine: 'vLLM (CUDA 12.1 optimized)',
+                tools: ['WireGuard VPN', 'PiHole DNS', 'HunterBot-Lite'],
+                requirements: 'NVIDIA GPU (8GB+ VRAM) recommended'
+            })
         }
     ];
 

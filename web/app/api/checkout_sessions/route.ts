@@ -40,13 +40,19 @@ export async function POST(req: Request) {
                 finalName = `${product.name} (Volunteer Rate)`;
             }
 
+            let finalImage = product.image;
+            if (finalImage && finalImage.startsWith('/')) {
+                const origin = req.headers.get('origin') || 'http://localhost:3000';
+                finalImage = `${origin}${finalImage}`;
+            }
+
             lineItems.push({
                 price_data: {
                     currency: product.currency,
                     product_data: {
                         name: finalName,
                         description: product.richDescription || undefined,
-                        images: product.image ? [product.image] : [],
+                        images: finalImage ? [finalImage] : [],
                         metadata: {
                             provider: product.provider,
                             externalId: product.externalId
