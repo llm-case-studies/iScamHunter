@@ -62,6 +62,39 @@ export async function POST(req: Request) {
                 },
                 quantity: item.quantity || 1,
             });
+
+            // 4. Handle Add-ons (Server-Side Validation)
+            if (item.addons && Array.isArray(item.addons) && item.addons.length > 0) {
+                if (product.specs) {
+                    try {
+                        const specs = JSON.parse(product.specs as string);
+                        if (specs.options && Array.isArray(specs.options)) {
+                            for (const addonId of item.addons) {
+                                const option = specs.options.find((o: any) => o.id === addonId);
+                                if (option) {
+                                    lineItems.push({
+                                        price_data: {
+                                            currency: product.currency,
+                                            product_data: {
+                                                name: `+ ${option.name}`, // "Ad-on" naming style
+                                                description: option.description,
+                                                metadata: {
+                                                    type: 'addon',
+                                                    parentId: product.id
+                                                }
+                                            },
+                                            unit_amount: option.price,
+                                        },
+                                        quantity: item.quantity || 1, // Match parent quantity
+                                    });
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Error parsing product specs for add-ons", e);
+                    }
+                }
+            }
         }
 
         // Create Checkout Session with Metadata

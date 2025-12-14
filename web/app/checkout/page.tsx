@@ -17,6 +17,7 @@ import { useSearchParams } from 'next/navigation';
 function CheckoutContent() {
     const searchParams = useSearchParams();
     const productId = searchParams.get('productId');
+    const addonsParam = searchParams.get('addons'); // e.g., "opt_vllm,opt_admin"
 
     const [showInterceptor, setShowInterceptor] = useState(true); // Start with Interceptor pattern
     const [cartMetadata, setCartMetadata] = useState({});
@@ -24,7 +25,8 @@ function CheckoutContent() {
     // Initialize with passed product or default to hoodie
     const [items, setItems] = useState([{
         id: productId || 'sh-hoodie-001',
-        quantity: 1
+        quantity: 1,
+        addons: addonsParam ? addonsParam.split(',') : []
     }]);
 
     const fetchClientSecret = useCallback(() => {

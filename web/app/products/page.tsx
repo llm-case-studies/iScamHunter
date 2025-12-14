@@ -41,9 +41,9 @@ export default async function ProductGridPage() {
                             <div className="aspect-square w-full bg-gray-800 relative overflow-hidden">
                                 {product.image ? (
                                     <img
-                                        src={product.image.startsWith('http') ? product.image : `/api/image-proxy?url=${product.image}`} // Fallback logic handled in component usually, simplifying here
+                                        src={product.image.startsWith('/') ? product.image : `/api/image-proxy?url=${product.image}`} // Fallback logic handled in component usually, simplifying here
                                         alt={product.name}
-                                        className="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500"
+                                        className="object-contain w-full h-full p-4 group-hover:scale-110 transition-transform duration-500"
                                     />
                                 ) : (
                                     <div className="flex items-center justify-center h-full text-gray-600">

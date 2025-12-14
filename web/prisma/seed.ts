@@ -91,13 +91,18 @@ async function main() {
             price: 1995,
             provider: 'digital',
             externalId: 'docker_vllm_v1',
-            image: '/assets/logo/icon.svg', // Placeholder for container icon
+            image: '/assets/logo/Logo_Draft_With_Transparency.svg', // Validated existing file
             specs: JSON.stringify({
                 format: 'Docker Compose + .env',
                 base_image: 'Ubuntu 24.04 LTS (Jammy)',
                 ai_engine: 'vLLM (CUDA 12.1 optimized)',
                 tools: ['WireGuard VPN', 'PiHole DNS', 'HunterBot-Lite'],
-                requirements: 'NVIDIA GPU (8GB+ VRAM) recommended'
+                requirements: 'NVIDIA GPU (8GB+ VRAM) recommended',
+                options: [
+                    { id: 'opt_vllm', name: 'vLLM Support (Advanced AI)', price: 500, description: 'Pre-configured CUDA environment for local LLM inference.' },
+                    { id: 'opt_admin', name: 'Hunter Admin Dashboard', price: 300, description: 'Web-based control panel (FastAPI + React) for managing nodes.' },
+                    { id: 'opt_jokes', name: 'Scam Jokes Archive (1 Year)', price: 1200, description: 'Access to the daily updated humor feed.' }
+                ]
             })
         }
     ];
@@ -105,7 +110,7 @@ async function main() {
     for (const product of products) {
         await prisma.product.upsert({
             where: { id: product.id },
-            update: {},
+            update: product, // Update with new values if exists
             create: product,
         });
     }
