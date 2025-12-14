@@ -43,3 +43,31 @@ Since iOS can't *run* the container, the generic "iPhone App" is a **Remote Comm
     *   **Status:** "Safe Vault is Online."
 
 **Analogy:** The iPhone is the Remote; the Docker Container is the Apple TV.
+
+---
+
+## 5. Future Concepts (Requires Legal Review)
+
+### "The Call Defender" (Voice Evidence Kit)
+*   **The Container:** Modified VoIP Server (Asterisk).
+*   **Function:**
+    *   One-tap "Record this call" trigger from the Hunter Command app.
+    *   Auto-transcribes and highlights "Scam Script Keywords" (e.g., "AnyDesk", "Refund").
+*   **Legal Safety:** **STRICT "One-Party" vs "Two-Party" Consent mode.** App must strictly warn user about local wiretap laws before enabling.
+*   **User Story:** "Verify if this recording matches known scam scripts in The Lab."
+
+### "The Analyst Sandbox" (Safe Browsing)
+*   **The Container:** Browser-in-a-Box (Kasm / Neko).
+*   **Function:**
+    *   Disposable browsing environment. User opens a link -> Container renders it -> User sees video stream only.
+    *   Zero risk of malware infection on the main device.
+*   **User Story:** "I want to see what this shady link does, but I'm scared to click it. I'll open it in the Sandbox."
+
+---
+
+## 6. Deployment Strategy
+*   **Phase 1:** "Family Shield" (Low Risk, High Value).
+*   **Phase 2:** "Evidence Locker" (Forensic Tool).
+*   **Phase 3:** "Safe Vault" (Data Protection).
+
+*Note: All products are strictly "Civil Defense" tools. We DO NOT distribute offensive tools (DDoS, Spam-back).*
