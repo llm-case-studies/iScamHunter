@@ -1,41 +1,35 @@
-# iScamHunter: Product Strategy & RFC (Revised)
+# iScamHunter: Product Strategy & RFC (Final)
 
-**Current State:** v1.1 "Civil Defense"
+**Current State:** v1.2 "Civil Defense & Asymmetric Warfare"
 
-## 1. Project Context (The Correction)
-**iScamHunter** is a platform for **Community Protection and Civil Defense**.
-*   **Misconception:** We are NOT a "hack-back" or "scambaiting" vigilante group. We do not harass, DDoS, or illegally interact with scammers.
-*   **True Essence:** We are "The Shield". We use technology to **detect, document, and defend**.
-*   **Vibe:** Professional / Institutional / High-Tech (Think "CDC for Digital Viruses", not "Mr. Robot").
+## 1. Core Philosophy: Asymmetric Defense
+**The Method:** "Appear. Document. Expose."
+*   **The Concept:** We rely on **Asymmetric Warfare**. Scammers spend massive resources (call centers, scripts, infrastructure) to find victims. We spend minimal energy to simply **show up, document the interaction, and expose it**.
+*   **The Outcome:** The scammer has to run; we just have to stand still. They burn energy; we build evidence.
+*   **The Vibe:** "The Hunt" branding is designed to make civil defense feel "cool" for a younger demographic, driving engagement in what is essentially a community documentation project.
 
 ## 2. What We Have Built (The Foundation)
-*   **The Armory:** A marketplace for *defensive* gear (Hoodies = Awareness, Hardware = Protection).
-*   **The Academy:** Educational "Skill Trees" to inoculate users against social engineering.
-*   **The Lab:** A graph-based library of known scam patterns.
+*   **The Armory:** Equip the community. Hoodies build awareness; Hardware builds a defensive perimeter.
+*   **The Academy:** Knowledge transfer. Gamified lessons to inoculate users against social engineering.
+*   **The Lab:** The public record. A graph-based library of known scam patterns.
 
-## 3. The Product Roadmap (Reformulated)
+## 3. The Product Roadmap (Forward Intelligence)
 
-We are moving from "selling things" to **"empowering defense"**.
+### A. The Pattern Interceptor (Prevention)
+*   **Product:** The "Active Signal" middleware.
+*   **Function:** It quietly interrupts a user's transaction flow (e.g., checkout) to ask: "Is someone asking you to buy this?"
+*   **Value:** A low-friction digital speed bump that breaks the scammer's urgency loop.
 
-### A. "The Interceptor" (Clarified)
-*   **Old Concept:** Buying a phone line to annoy scammers. (❌ Rejected: Too aggressive/risky)
-*   **New Concept:** **The Pattern Interceptor (UI)**
-    *   *What it is:* The "Active Signal" middleware we built. It interrupts a user's linear journey (e.g., checkout) to offer a "Fork":
-        *   "Buying for yourself?" -> Continue.
-        *   "Buying for a victim?" -> Pause -> **Deploy 'Care Package' Logic**.
-    *   *Value:* It turns commerce into an intervention.
+### B. The Analyst Sandbox (Intelligence)
+*   **Product:** Clean Room Environment.
+*   **Function:** A cloud-hosted, disposable browser session (Dockerized) that allows researchers to safely visit, screenshot, and archive scam sites without exposing their own device.
+*   **Value:** Safe, scalable evidence collection. We observe; we do not engage.
 
-### B. "The Analyst Sandbox" (Was 'Scam-as-a-Service')
-*   **Old Concept:** Hosting fake banks. (❌ Rejected: Illegal/Dangerous)
-*   **New Concept:** **Clean Room Environment**
-    *   *What it is:* A cloud-hosted, disposable browser session (Dockerized) that allows researchers to safely visit and screenshot scam sites without exposing their own IP/Device.
-    *   *Goal:* Safe data collection and screenshot automation for the "Scam Library".
-
-### C. "The Early Warning System" (Crowd Intel)
-*   **Concept:** Community-driven reporting.
-*   **Mechanism:** "I saw this URL." -> We analyze -> We push update to "Hunter Nodes" (OPI5).
-*   **Hardware Role:** The OrangePi 5 isn't for attacking; it's a **Home Guard**. It runs local DNS filtering to block newly reported domains for the user's family.
+### C. The Early Warning System (Crowd Defense)
+*   **Product:** OrangePi 5 "Home Guard".
+*   **Function:** A localized DNS filter that receives real-time updates from "The Lab".
+*   **Value:** "Herd Immunity." One user reports a domain -> All Nodes block it instantly.
 
 ## 4. Next Steps
-*   **Design:** Update branding to reflect "Protection/Professionalism" (Less neon-hacker, more "Blue Team" cyber-defense).
-*   **Tech:** Focus on the "Analyst Sandbox" (safe browsing) as the next major feature.
+*   **Execution:** Focus purely on the "Analyst Sandbox" for safe data collection.
+*   **Narrative:** Maintain the "Hunter" aesthetic for engagement, but operate with the precision of a research institute.
