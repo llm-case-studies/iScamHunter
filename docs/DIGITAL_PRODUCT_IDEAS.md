@@ -63,11 +63,39 @@ Since iOS can't *run* the container, the generic "iPhone App" is a **Remote Comm
     *   Zero risk of malware infection on the main device.
 *   **User Story:** "I want to see what this shady link does, but I'm scared to click it. I'll open it in the Sandbox."
 
+### "The Neighborhood Watch" (Community Radar)
+*   **The Container:** P2P Threat Sharing Node (Gossip Protocol).
+*   **Function:**
+    *   Anonymized local network monitoring.
+    *   Shares "Blocked Domain" hits with trusted neighbors/verified users.
+    *   Visualizes the local threat landscape (e.g., "3 phishing attempts in your building today").
+*   **User Story:** "Our condo board runs a node. We spotted a fake maintenance portal targeting residents before anyone clicked."
+
+### "The Time Capsule" (Digital Estate)
+*   **The Container:** Encrypted Cold Storage + Dead Man's Switch.
+*   **Function:**
+    *   Periodically creates encrypted backups of critical docs (Passports, Deeds).
+    *   Distributes shards to trusted contacts or cloud locations.
+    *   "Emergency Access" instructions sent to next-of-kin if user is inactive for 30 days.
+*   **User Story:** "After my dad passed, this gave us access to his accounts without probate court."
+
+### "The Scout" (Proactive Threat Hunter)
+*   **The Container:** Automated Scanner.
+*   **Function:**
+    *   Checks visited URLs against 12+ threat databases (The Lab, VirusTotal) in real-time.
+    *   Provides a "Safety Score" overlay.
+*   **User Story:** "Before I buy that 'discount' iPad, The Scout warns me the domain was registered yesterday."
+
 ---
 
-## 6. Deployment Strategy
-*   **Phase 1:** "Family Shield" (Low Risk, High Value).
-*   **Phase 2:** "Evidence Locker" (Forensic Tool).
-*   **Phase 3:** "Safe Vault" (Data Protection).
+## 6. Legal & Safety (The "Pre-Flight" Check)
+All active defense tools are governed by our **Legal Framework (`docs/LEGAL_HONEYPOT_FRAMEWORK.md`)**.
+Users must accept the "Civil Defense Oath":
+1.  **Defense Only:** No offensive actions.
+2.  **Privacy:** Respect local wiretap/monitoring laws.
+3.  **Research:** Data is for protection and intelligence gathering.
 
-*Note: All products are strictly "Civil Defense" tools. We DO NOT distribute offensive tools (DDoS, Spam-back).*
+## 7. Deployment Strategy
+*   **Phase 1:** "Family Shield" (Immediate Protection).
+*   **Phase 2:** "Evidence Locker" & "Analyst Sandbox" (Tools for Hunters).
+*   **Phase 3:** "Neighborhood Watch" & "Time Capsule" (Community Resilience).
