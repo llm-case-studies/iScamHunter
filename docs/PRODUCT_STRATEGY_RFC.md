@@ -19,6 +19,7 @@
 *   **Product:** The "Active Signal" middleware.
 *   **Function:** It quietly interrupts a user's transaction flow (e.g., checkout) to ask: "Is someone asking you to buy this?"
 *   **Value:** A low-friction digital speed bump that breaks the scammer's urgency loop.
+*   **Strategic Note:** This is the *inverse of a Dark Pattern*. Instead of tricking users into clicking, we pause them for cognitive safety.
 
 ### B. The Analyst Sandbox (Intelligence)
 *   **Product:** Clean Room Environment.

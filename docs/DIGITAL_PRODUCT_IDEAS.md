@@ -8,7 +8,22 @@ Since we cannot run Docker on iPhones, our "Digital Products" are **Self-Hosted 
 
 ---
 
-## 1. "The Family Shield" (Network Defense Kit)
+## 1. User Profiles (Simplicity Layer)
+To reduce cognitive load, we bundle containers into **Defense Profiles**:
+
+*   **🛡️ The Family Protector**
+    *   *Includes:* Family Shield + Hunter Command.
+    *   *Goal:* "Set and forget" network safety for non-technical households.
+*   **🔬 The Solo Researcher**
+    *   *Includes:* Analyst Sandbox + Evidence Locker.
+    *   *Goal:* Safe investigation and foreclosure of scam resources.
+*   **🏛️ The Civil Defender**
+    *   *Includes:* Neighborhood Watch + The Scout.
+    *   *Goal:* Community-level resilience and reporting.
+
+---
+
+## 2. "The Family Shield" (Network Defense Kit)
 *   **The Container:** Pre-configured **AdGuard Home** or **Pi-hole**.
 *   **The "iScamHunter" Value Add:**
     *   Pre-loaded with our **Dynamic Blocklist** (updated hourly from "The Lab").
