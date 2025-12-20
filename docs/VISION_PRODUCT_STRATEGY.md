@@ -62,6 +62,7 @@ The target hardware for our "Scam Hunter Node" is the **OrangePi 5 Plus**.
 - **Reasoning:** High AI inference capability (NPU) for local scam detection.
 - **Goal:** Users install this device to protect their home network.
 - **Fulfillment:** Requires buying the board, case, and power supply, then flashing our custom OS. This is impossible on Shopify/ClickFunnels without massive manual overhead.
+- **Features:** See [Smart Monitoring Spec](./FEATURE_SMART_MONITORING.md) for Vacation & Construction modes.
 
 ---
 
