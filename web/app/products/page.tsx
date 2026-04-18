@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 const prisma = new PrismaClient();
 
 async function getProducts() {

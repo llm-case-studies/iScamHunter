@@ -3,6 +3,8 @@ import { HunterTable } from '../components/admin/HunterTable';
 import { ExternalLink, Database, CreditCard } from 'lucide-react';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 const prisma = new PrismaClient();
 
 async function getHunters() {

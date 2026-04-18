@@ -1,0 +1,22 @@
+[
+  {
+    "id": "south-sea-bubble-1720",
+    "title": "The South Sea Bubble / The Cornhill Hustle",
+    "year": 1720,
+    "category": "Financial",
+    "mechanism": {
+      "hook": "Promise of infinite returns from a mysterious, exclusive undertaking",
+      "sting": "Promoter collects capital and vanishes (Rug Pull) / Insiders sell at peak (Pump & Dump)",
+      "psychology": "Fear Of Missing Out (FOMO) + Social Proof (Herd Behavior)"
+    },
+    "source_title": "Memoirs of Extraordinary Popular Delusions and the Madness of Crowds",
+    "source_author": "Charles Mackay",
+    "quote": "A company for carrying on an undertaking of great advantage, but nobody to know what it is.",
+    "descendants": [
+      "Crypto Rug Pull",
+      "ICO Scams",
+      "Yield Farming Ponzi",
+      "Vaporware Startups"
+    ]
+  }
+]

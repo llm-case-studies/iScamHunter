@@ -1,4 +1,14 @@
 import { NextResponse } from 'next/server';
+
+// Stripe checkout temporarily disabled for staging
+export async function POST() {
+    return NextResponse.json(
+        { error: 'Checkout is temporarily disabled. Coming soon.' },
+        { status: 503 }
+    );
+}
+
+/* --- Original Stripe integration (re-enable when ready) ---
 import Stripe from 'stripe';
 import { PrismaClient } from '@prisma/client';
 
@@ -112,3 +122,4 @@ export async function POST(req: Request) {
         return NextResponse.json({ error: err.message }, { status: 500 });
     }
 }
+--- */

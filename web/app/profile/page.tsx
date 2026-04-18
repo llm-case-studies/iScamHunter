@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import { HunterProfile } from '../components/community/HunterProfile';
 
+export const dynamic = 'force-dynamic';
+
 const prisma = new PrismaClient();
 
 async function getHunterData() {
